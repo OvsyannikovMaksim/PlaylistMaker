@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">PlayList Maker</string>
+    <string name="search_button_text">Search</string>
+    <string name="media_button_text">Media library</string>
+    <string name="settings_button_text">Settings</string>
+    <string name="settings_theme_text">Dark theme</string>
+    <string name="settings_share_text">Share app</string>
+    <string name="settings_support_text">Write to support</string>
+    <string name="settings_eula_text">Eula</string>
 </resources>
