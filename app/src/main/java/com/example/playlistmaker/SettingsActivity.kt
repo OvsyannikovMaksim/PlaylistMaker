@@ -50,7 +50,7 @@ class SettingsActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun startEulaIntent()  {
+    private fun startEulaIntent() {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setData(Uri.parse("https://yandex.ru/legal/practicum_offer/"))
         startActivity(intent)

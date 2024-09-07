@@ -17,4 +17,15 @@
         <item name="android:fontWeight">500</item>
     </style>
 
+    <style name="EditTextStyle">
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="startIconTint">@color/grey</item>
+        <item name="background">@color/light_grey</item>
+    </style>
+
 </resources>
