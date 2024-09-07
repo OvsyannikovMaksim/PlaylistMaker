@@ -23,6 +23,8 @@ class SearchActivity : AppCompatActivity() {
         val editTextLayout = findViewById<TextInputLayout>(R.id.textField)
         val editText = findViewById<TextInputEditText>(R.id.edit_text)
 
+        text?.let { editText.setText(it) }
+
         val textWatcher =
             object : TextWatcher {
                 override fun beforeTextChanged(
@@ -31,7 +33,6 @@ class SearchActivity : AppCompatActivity() {
                     count: Int,
                     after: Int,
                 ) {
-                    TODO("Not yet implemented")
                 }
 
                 override fun onTextChanged(
@@ -40,21 +41,36 @@ class SearchActivity : AppCompatActivity() {
                     p2: Int,
                     p3: Int,
                 ) {
-                    TODO("Not yet implemented")
+                    text = p0.toString()
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
-                    TODO("Not yet implemented")
                 }
             }
 
         editTextLayout.setEndIconOnClickListener {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(it.windowToken, 0)
             editText.text?.clear()
             editText.clearFocus()
         }
 
         editText.addTextChangedListener(textWatcher)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        text.let { outState.putString(EDIT_TEXT_TAG, it) }
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        text = savedInstanceState.getString(EDIT_TEXT_TAG)
+    }
+
+    companion object {
+        const val EDIT_TEXT_TAG = "EditTextTag"
+        var text: String? = null
     }
 }
