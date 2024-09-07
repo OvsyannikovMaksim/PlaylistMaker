@@ -23,20 +23,23 @@
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/share_button"
         android:padding="16dp"
-        android:text="@string/settings_support_text"
+        android:text="@string/settings_share_text"
         android:drawableEnd="@drawable/share_icon" />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/support_button"
         android:padding="16dp"
-        android:text="@string/settings_share_text"
+        android:text="@string/settings_support_text"
         android:drawableEnd="@drawable/support_icon" />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/eula_button"
         android:padding="16dp"
         android:text="@string/settings_eula_text"
         android:drawableEnd="@drawable/right_arrow_icon" />
