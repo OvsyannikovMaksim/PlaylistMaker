@@ -4,15 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Theme.PlayListMaker.MainActivity"
     android:orientation="vertical"
-    android:background="@color/main_blue"
-    android:paddingHorizontal="@dimen/standard_margin"
-    android:fitsSystemWindows="true">
+    android:paddingHorizontal="@dimen/standard_margin">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="@string/app_name"
+        app:titleTextAppearance="@style/AppBarTextStyle"
         app:titleTextColor="@color/white"/>
 
     <com.google.android.material.button.MaterialButton
@@ -22,10 +22,7 @@
         android:layout_weight="1"
         android:layout_marginTop="24dp"
         android:text="@string/search_button_text"
-        android:textSize="@dimen/text_size_22"
-        android:backgroundTint="@color/white"
-        app:cornerRadius="@dimen/corner_radius"
-        android:textColor="@color/black"
+        style="@style/MainScreenButtonStyle"
         app:icon="@drawable/search_icon"
         app:iconTint="@color/black"
         app:iconGravity="textStart"
@@ -40,10 +37,7 @@
         android:layout_weight="1"
         android:layout_marginVertical="@dimen/standard_margin"
         android:text="@string/media_button_text"
-        android:textSize="@dimen/text_size_22"
-        android:backgroundTint="@color/white"
-        app:cornerRadius="@dimen/corner_radius"
-        android:textColor="@color/black"
+        style="@style/MainScreenButtonStyle"
         app:icon="@drawable/library_icon"
         app:iconTint="@color/black"
         app:iconGravity="textStart"
@@ -56,11 +50,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginBottom="28dp"
-        android:textSize="@dimen/text_size_22"
         android:text="@string/settings_button_text"
-        android:backgroundTint="@color/white"
-        app:cornerRadius="@dimen/corner_radius"
-        android:textColor="@color/black"
+        style="@style/MainScreenButtonStyle"
         app:icon="@drawable/settings_icon"
         app:iconTint="@color/black"
         app:iconGravity="textStart"

@@ -7,4 +7,5 @@
     <string name="settings_share_text">Share app</string>
     <string name="settings_support_text">Write to support</string>
     <string name="settings_eula_text">Eula</string>
+    <string name="settings_title">Settings</string>
 </resources>
