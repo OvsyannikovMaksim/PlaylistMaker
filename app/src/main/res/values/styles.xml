@@ -25,7 +25,8 @@
         <item name="boxCornerRadiusTopEnd">8dp</item>
         <item name="boxCornerRadiusTopStart">8dp</item>
         <item name="startIconTint">@color/grey</item>
-        <item name="background">@color/light_grey</item>
+        <item name="android:background">@color/light_grey</item>
+        <item name="android:textColorHint">@color/grey</item>
     </style>
 
 </resources>
