@@ -13,27 +13,42 @@
         app:titleTextAppearance="@style/AppBarTextStyle"
         app:navigationIcon="@drawable/back_button"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textField"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/standard_margin"
         app:layout_constraintTop_toBottomOf="@id/search_toolbar"
         android:layout_marginVertical="8dp"
-        app:endIconMode="clear_text"
-        app:startIconDrawable="@drawable/search_icon"
-        android:hint="@string/search_title"
-        style="@style/EditTextStyle">
+        android:orientation="horizontal"
+        android:background="@drawable/et_background">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="36dp"
             android:id="@+id/edit_text"
+            android:hint="@string/search_title"
+            android:layout_marginStart="10dp"
             android:maxLines="1"
             android:maxLength="32"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:singleLine="true"
+            android:drawableStart="@drawable/et_icon"
+            android:drawablePadding="10dp"
+            android:textColorHint="@color/et_icon_color"
+            android:textColor="@color/black"
+            android:theme="@style/MyEditTextTheme"
+            style="@style/MyEditTextStyle"
+            />
 
-
-    </com.google.android.material.textfield.TextInputLayout>
+        <ImageView
+            android:id="@+id/search_clear_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/et_clear"
+            android:padding="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="end|center"
+            android:visibility="gone"/>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

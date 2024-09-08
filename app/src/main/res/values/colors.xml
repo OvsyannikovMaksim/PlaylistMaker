@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Defaults-->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="main_blue">#3772E7</color>
-    <color name="grey">#AEAFB4</color>
-    <color name="light_grey">#E6E8EB</color>
+    <color name="yp_grey">#AEAFB4</color>
+    <color name="yp_light_grey">#E6E8EB</color>
+    <color name="yp_black">#1A1B22</color>
+    <!--Defaults-->
+    <color name="et_background">@color/yp_light_grey</color>
+    <color name="et_icon_color">@color/yp_grey</color>
+    <color name="search_screen_icons">@color/yp_grey</color>
 </resources>

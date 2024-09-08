@@ -12,19 +12,23 @@
         android:layout_height="wrap_content"
         app:title="@string/settings_title"
         app:titleTextAppearance="@style/AppBarTextStyle"
-        app:navigationIcon="@drawable/back_button"/>
+        app:navigationIcon="@drawable/back_button"
+        />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="@string/settings_theme_text" />
+        android:padding="@dimen/standard_margin"
+        style="@style/SettingsScreenButtons"
+        android:text="@string/settings_theme_text"
+        android:layout_marginTop="24dp"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/share_button"
-        android:padding="16dp"
+        style="@style/SettingsScreenButtons"
+        android:padding="@dimen/standard_margin"
         android:text="@string/settings_share_text"
         android:drawableEnd="@drawable/share_icon" />
 
@@ -32,7 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/support_button"
-        android:padding="16dp"
+        style="@style/SettingsScreenButtons"
+        android:padding="@dimen/standard_margin"
         android:text="@string/settings_support_text"
         android:drawableEnd="@drawable/support_icon" />
 
@@ -40,7 +45,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/eula_button"
-        android:padding="16dp"
+        style="@style/SettingsScreenButtons"
+        android:padding="@dimen/standard_margin"
         android:text="@string/settings_eula_text"
         android:drawableEnd="@drawable/right_arrow_icon" />
 

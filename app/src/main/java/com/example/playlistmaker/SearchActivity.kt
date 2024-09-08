@@ -4,25 +4,29 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
 class SearchActivity : AppCompatActivity() {
+    private var text: String? = null
+    private lateinit var toolbar: Toolbar
+    private lateinit var editText: EditText
+    private lateinit var clearSearchButton: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        val toolbar = findViewById<Toolbar>(R.id.search_toolbar)
+        toolbar = findViewById(R.id.search_toolbar)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener {
             finish()
         }
-
-        val editTextLayout = findViewById<TextInputLayout>(R.id.textField)
-        val editText = findViewById<TextInputEditText>(R.id.edit_text)
-
+        editText = findViewById(R.id.edit_text)
+        clearSearchButton = findViewById(R.id.search_clear_button)
         text?.let { editText.setText(it) }
 
         val textWatcher =
@@ -45,15 +49,17 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
+                    clearSearchButton.visibility = View.VISIBLE
                 }
             }
 
-        editTextLayout.setEndIconOnClickListener {
+        clearSearchButton.setOnClickListener {
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(it.windowToken, 0)
             editText.text?.clear()
             editText.clearFocus()
+            clearSearchButton.visibility = View.GONE
         }
 
         editText.addTextChangedListener(textWatcher)
@@ -71,6 +77,5 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         const val EDIT_TEXT_TAG = "EditTextTag"
-        var text: String? = null
     }
 }

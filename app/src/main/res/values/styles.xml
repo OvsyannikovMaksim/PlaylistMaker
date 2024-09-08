@@ -5,28 +5,30 @@
         <item name="backgroundTint">@color/white</item>
         <item name="cornerRadius">@dimen/corner_radius</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:fontWeight">500</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.0</item>
     </style>
 
     <style name="AppBarTextStyle">
-        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textSize">@dimen/text_size_22</item>
         <item name="android:fontWeight">500</item>
     </style>
 
-    <style name="EditTextStyle">
-        <item name="boxStrokeWidth">0dp</item>
-        <item name="boxStrokeWidthFocused">0dp</item>
-        <item name="boxCornerRadiusBottomEnd">8dp</item>
-        <item name="boxCornerRadiusBottomStart">8dp</item>
-        <item name="boxCornerRadiusTopEnd">8dp</item>
-        <item name="boxCornerRadiusTopStart">8dp</item>
-        <item name="startIconTint">@color/grey</item>
-        <item name="android:background">@color/light_grey</item>
-        <item name="android:textColorHint">@color/grey</item>
+    <style name="SettingsScreenButtons">
+        <item name="android:textSize">@dimen/text_size_16</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <style name="MyEditTextStyle" parent="Theme.AppCompat.Light">
+        <item name="android:textCursorDrawable">@drawable/et_cursor</item>
+        <item name="android:textSize">@dimen/text_size_16</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:background">@null</item>
     </style>
 
 </resources>
