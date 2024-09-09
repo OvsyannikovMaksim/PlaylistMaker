@@ -49,7 +49,12 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
-                    clearSearchButton.visibility = View.VISIBLE
+                    if (p0.toString().isEmpty())
+                        {
+                            clearSearchButton.visibility = View.GONE
+                        } else {
+                        clearSearchButton.visibility = View.VISIBLE
+                    }
                 }
             }
 
@@ -58,7 +63,6 @@ class SearchActivity : AppCompatActivity() {
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(it.windowToken, 0)
             editText.text?.clear()
-            editText.clearFocus()
             clearSearchButton.visibility = View.GONE
         }
 
