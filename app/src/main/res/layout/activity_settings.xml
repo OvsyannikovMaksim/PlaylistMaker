@@ -4,89 +4,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:theme="@style/Theme.PlayListMaker.SettingsActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/settings_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/app_name"
-        app:titleTextColor="@color/black"
-        app:navigationIcon="@drawable/back_button"/>
+        app:title="@string/settings_title"
+        app:titleTextAppearance="@style/AppBarTextStyle"
+        app:navigationIcon="@drawable/back_button"
+        />
 
-    <FrameLayout
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:padding="@dimen/standard_margin">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:text="@string/settings_theme_text"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_16"/>
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/pic_size"
-            android:layout_gravity="end|center_vertical"
-            app:useMaterialThemeColors="false"
-            app:trackTint="@color/light_grey"
-            app:thumbTint="@color/grey" />
-    </FrameLayout>
+        android:padding="@dimen/standard_margin"
+        style="@style/SettingsScreenButtons"
+        android:text="@string/settings_theme_text"
+        android:layout_marginTop="24dp"/>
 
-    <FrameLayout
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/standard_margin">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:text="@string/settings_share_text"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_16"/>
-        <ImageView
-            android:src="@drawable/share_icon"
-            android:layout_width="@dimen/pic_size"
-            android:layout_height="@dimen/pic_size"
-            android:layout_gravity="end|center_vertical"/>
-    </FrameLayout>
+        android:id="@+id/share_button"
+        style="@style/SettingsScreenButtons"
+        android:padding="@dimen/standard_margin"
+        android:text="@string/settings_share_text"
+        android:drawableEnd="@drawable/share_icon" />
 
-    <FrameLayout
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/standard_margin">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:text="@string/settings_support_text"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_16"/>
-        <ImageView
-            android:src="@drawable/support_icon"
-            android:layout_width="@dimen/pic_size"
-            android:layout_height="@dimen/pic_size"
-            android:layout_gravity="end|center_vertical"/>
-    </FrameLayout>
+        android:id="@+id/support_button"
+        style="@style/SettingsScreenButtons"
+        android:padding="@dimen/standard_margin"
+        android:text="@string/settings_support_text"
+        android:drawableEnd="@drawable/support_icon" />
 
-    <FrameLayout
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/standard_margin">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:text="@string/settings_eula_text"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_16"/>
-        <ImageView
-            android:src="@drawable/right_arrow_icon"
-            android:layout_width="@dimen/pic_size"
-            android:layout_height="@dimen/pic_size"
-            android:layout_gravity="end|center_vertical" />
-    </FrameLayout>
+        android:id="@+id/eula_button"
+        style="@style/SettingsScreenButtons"
+        android:padding="@dimen/standard_margin"
+        android:text="@string/settings_eula_text"
+        android:drawableEnd="@drawable/right_arrow_icon" />
 
 </LinearLayout>
