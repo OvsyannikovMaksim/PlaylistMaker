@@ -11,4 +11,5 @@
     <color name="et_background">@color/yp_light_grey</color>
     <color name="et_icon_color">@color/yp_grey</color>
     <color name="search_screen_icons">@color/yp_grey</color>
+    <color name="text_color">@color/black</color>
 </resources>
