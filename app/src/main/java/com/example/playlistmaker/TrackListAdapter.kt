@@ -10,25 +10,34 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.api.Track
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class TrackListAdapter(private val trackList: ArrayList<Track>) :
-    RecyclerView.Adapter<TrackListAdapter.TrackListViewHolder>() {
-
-    override fun onBindViewHolder(holder: TrackListViewHolder, position: Int) {
+class TrackListAdapter(
+    private val trackList: ArrayList<Track>,
+) : RecyclerView.Adapter<TrackListAdapter.TrackListViewHolder>() {
+    override fun onBindViewHolder(
+        holder: TrackListViewHolder,
+        position: Int,
+    ) {
         holder.bind(trackList[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackListViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): TrackListViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.track_item_list, parent, false)
         return TrackListViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return trackList.size
-    }
+    override fun getItemCount(): Int = trackList.size
 
-    class TrackListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class TrackListViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         private val poster = itemView.findViewById<ImageView>(R.id.poster)
         private val trackName = itemView.findViewById<TextView>(R.id.track_name)
         private val trackTime = itemView.findViewById<TextView>(R.id.track_time)
@@ -36,9 +45,10 @@ class TrackListAdapter(private val trackList: ArrayList<Track>) :
 
         fun bind(track: Track) {
             trackName.text = track.trackName
-            trackTime.text = track.trackTime
+            trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
             artists.text = track.artistName
-            Glide.with(itemView)
+            Glide
+                .with(itemView)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.placeholder)
                 .fitCenter()
@@ -46,13 +56,15 @@ class TrackListAdapter(private val trackList: ArrayList<Track>) :
                 .into(poster)
         }
 
-        private fun dpToPx(dp: Float, context: Context): Int {
-            return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                context.resources.displayMetrics
-            ).toInt()
-        }
+        private fun dpToPx(
+            dp: Float,
+            context: Context,
+        ): Int =
+            TypedValue
+                .applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    dp,
+                    context.resources.displayMetrics,
+                ).toInt()
     }
 }
-

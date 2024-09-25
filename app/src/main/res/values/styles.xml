@@ -37,4 +37,22 @@
         <item name="android:textColor">@color/text_color</item>
     </style>
 
+    <style name="placeholderText">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/text_size_19</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+    <style name="ErrorPlaceholderButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:textSize">@dimen/text_size_14</item>
+        <item name="backgroundTint">@color/inverted_background</item>
+        <item name="cornerRadius">@dimen/corner_radius_54</item>
+        <item name="android:textColor">@color/inverted_text_color</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0.0</item>
+    </style>
+
 </resources>

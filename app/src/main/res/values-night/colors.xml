@@ -4,4 +4,6 @@
     <color name="et_icon_color">@color/black</color>
     <color name="search_screen_icons">@color/white</color>
     <color name="text_color">@color/white</color>
+    <color name="inverted_text_color">@color/black</color>
+    <color name="inverted_background">@color/white</color>
 </resources>

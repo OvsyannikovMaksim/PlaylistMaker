@@ -15,4 +15,7 @@
     <string name="eula_link">https://yandex.ru/legal/practicum_offer/</string>
     <string name="practikum_link">https://practicum.yandex.ru/android-developer</string>
     <string name="chooser_text">Share via</string>
+    <string name="nothing_found">Nothing found</string>
+    <string name="error_found">Communication problems\n\nThe download failed. Check your internet connection</string>
+    <string name="refresh_button_text">Refresh</string>
 </resources>
