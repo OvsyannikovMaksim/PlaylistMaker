@@ -39,7 +39,7 @@ class SettingsViewModel(
         application.startActivity(intent)
     }
 
-    fun changeThemeMode(checked: Boolean)  {
+    fun changeThemeMode(checked: Boolean) {
         (application as App).switchTheme(checked)
         SharedPreferences.putNightMode(application, checked)
     }

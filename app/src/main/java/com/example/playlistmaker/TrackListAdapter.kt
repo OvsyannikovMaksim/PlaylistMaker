@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.api.Track
+import com.example.playlistmaker.utils.SharedPreferences
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -38,6 +39,7 @@ class TrackListAdapter(
     class TrackListViewHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
+        private val trackItem = itemView.findViewById<View>(R.id.track_item)
         private val poster = itemView.findViewById<ImageView>(R.id.poster)
         private val trackName = itemView.findViewById<TextView>(R.id.track_name)
         private val trackTime = itemView.findViewById<TextView>(R.id.track_time)
@@ -45,7 +47,8 @@ class TrackListAdapter(
 
         fun bind(track: Track) {
             trackName.text = track.trackName
-            trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+            trackTime.text =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
             artists.text = track.artistName
             Glide
                 .with(itemView)
@@ -54,6 +57,9 @@ class TrackListAdapter(
                 .fitCenter()
                 .transform(RoundedCorners(dpToPx(2.0F, itemView.context)))
                 .into(poster)
+            trackItem.setOnClickListener {
+                SharedPreferences.putTrackToHistory(itemView.context, track)
+            }
         }
 
         private fun dpToPx(
