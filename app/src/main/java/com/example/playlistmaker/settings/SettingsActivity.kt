@@ -1,15 +1,16 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.settings
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
+import com.example.playlistmaker.R
 import com.example.playlistmaker.utils.SharedPreferences
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var settingsViewModel: SettingsViewModel
     private lateinit var darkThemeSwitch: SwitchMaterial
     private lateinit var shareButton: TextView
     private lateinit var supportButton: TextView
@@ -24,6 +25,8 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
+        settingsViewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
+
         darkThemeSwitch =
             findViewById<SwitchMaterial>(R.id.dark_theme_switch).apply {
                 isChecked = SharedPreferences.getNightMode(context)
@@ -33,42 +36,19 @@ class SettingsActivity : AppCompatActivity() {
         eulaButton = findViewById(R.id.eula_button)
 
         shareButton.setOnClickListener {
-            startShareIntent()
+            settingsViewModel.startShareIntent()
         }
 
         supportButton.setOnClickListener {
-            startSupportIntent()
+            settingsViewModel.startSupportIntent()
         }
 
         eulaButton.setOnClickListener {
-            startEulaIntent()
+            settingsViewModel.startEulaIntent()
         }
 
         darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
-            (applicationContext as App).switchTheme(checked)
-            SharedPreferences.putNightMode(this, checked)
+            settingsViewModel.changeThemeMode(checked)
         }
-    }
-
-    private fun startShareIntent() {
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.practikum_link))
-        intent.setType("text/plain")
-        startActivity(Intent.createChooser(intent, getString(R.string.chooser_text)))
-    }
-
-    private fun startSupportIntent() {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.email_to)))
-        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
-        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.email_body))
-        startActivity(intent)
-    }
-
-    private fun startEulaIntent() {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setData(Uri.parse(getString(R.string.eula_link)))
-        startActivity(intent)
     }
 }

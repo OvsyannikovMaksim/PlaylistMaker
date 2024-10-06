@@ -9,7 +9,7 @@ object SharedPreferences {
     fun putNightMode(
         context: Context,
         isNightMode: Boolean,
-    )  {
+    ) {
         getSharedPreferences(context).edit().putBoolean(NIGTHMODE, isNightMode).apply()
     }
 

@@ -22,7 +22,7 @@
             android:name=".MediaActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".settings.SettingsActivity"
             android:exported="false"/>
         <activity
             android:name=".MainActivity"
