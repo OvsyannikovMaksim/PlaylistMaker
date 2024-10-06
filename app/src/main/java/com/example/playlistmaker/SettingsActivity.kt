@@ -6,8 +6,15 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.playlistmaker.utils.SharedPreferences
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var darkThemeSwitch: SwitchMaterial
+    private lateinit var shareButton: TextView
+    private lateinit var supportButton: TextView
+    private lateinit var eulaButton: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -17,9 +24,13 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        val shareButton = findViewById<TextView>(R.id.share_button)
-        val supportButton = findViewById<TextView>(R.id.support_button)
-        val eulaButton = findViewById<TextView>(R.id.eula_button)
+        darkThemeSwitch =
+            findViewById<SwitchMaterial>(R.id.dark_theme_switch).apply {
+                isChecked = SharedPreferences.getNightMode(context)
+            }
+        shareButton = findViewById(R.id.share_button)
+        supportButton = findViewById(R.id.support_button)
+        eulaButton = findViewById(R.id.eula_button)
 
         shareButton.setOnClickListener {
             startShareIntent()
@@ -31,6 +42,11 @@ class SettingsActivity : AppCompatActivity() {
 
         eulaButton.setOnClickListener {
             startEulaIntent()
+        }
+
+        darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
+            (applicationContext as App).switchTheme(checked)
+            SharedPreferences.putNightMode(this, checked)
         }
     }
 
