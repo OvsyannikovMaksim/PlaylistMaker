@@ -103,6 +103,7 @@ class SearchActivity : AppCompatActivity() {
                         editText.hasFocus() &&
                         p0?.isEmpty() == true &&
                         historyList.isNotEmpty()
+                    trackRecyclerView.isVisible = !history.isVisible
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
@@ -123,6 +124,7 @@ class SearchActivity : AppCompatActivity() {
         editText.addTextChangedListener(textWatcher)
         editText.setOnFocusChangeListener { _, hasFocus ->
             history.isVisible = hasFocus && editText.text.isEmpty() && historyList.isNotEmpty()
+            trackRecyclerView.isVisible = !history.isVisible
         }
 
         editText.setOnEditorActionListener { textView, actionId, _ ->

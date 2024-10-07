@@ -44,7 +44,7 @@ object SharedPreferences {
         }
     }
 
-    fun clearTrackHistory(context: Context)  {
+    fun clearTrackHistory(context: Context) {
         getSharedPreferences(context).edit().remove(TRACKHISTORY).apply()
     }
 
