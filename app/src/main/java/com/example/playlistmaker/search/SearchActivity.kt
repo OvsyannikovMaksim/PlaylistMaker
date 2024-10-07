@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -100,14 +101,17 @@ class SearchActivity : AppCompatActivity() {
                 ) {
                     searchText = p0.toString()
                     history.isVisible =
-                        editText.hasFocus() &&
-                        p0?.isEmpty() == true &&
-                        historyList.isNotEmpty()
+                        editText.hasFocus() && p0?.isEmpty() == true && historyList.isNotEmpty()
                     trackRecyclerView.isVisible = !history.isVisible
+                    Log.d("TEST", "$p0 $p1 $p2 $p3")
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
                     clearSearchButton.isVisible = p0.toString().isNotEmpty()
+                    if (p0.toString().isEmpty()) {
+                        songs.clear()
+                        trackRecyclerView.adapter?.notifyDataSetChanged()
+                    }
                 }
             }
 
