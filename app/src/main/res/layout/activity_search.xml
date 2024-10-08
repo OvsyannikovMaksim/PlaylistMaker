@@ -54,31 +54,7 @@
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/nothing_found_placeholder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_layout">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/nothing_found_pic" />
-
-        <TextView
-            style="@style/placeholderText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_margin"
-            android:text="@string/nothing_found" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/error_found_placeholder"
+        android:id="@+id/placeholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -90,12 +66,14 @@
         app:layout_constraintTop_toBottomOf="@id/edit_text_layout">
 
         <ImageView
+            android:id="@+id/placeholder_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:src="@drawable/error_found_pic" />
 
         <TextView
+            android:id="@+id/placeholder_text"
             style="@style/placeholderText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -132,7 +110,7 @@
             android:layout_marginHorizontal="@dimen/standard_margin"
             android:layout_marginTop="42dp"
             android:layout_marginBottom="20dp"
-            android:text="You search"
+            android:text="@string/history_text"
             android:textAlignment="center" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -150,7 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_24"
-            android:text="Clear" />
+            android:text="@string/history_button_text" />
     </LinearLayout>
 
 

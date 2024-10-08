@@ -7,13 +7,13 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
@@ -36,12 +36,13 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var editText: EditText
     private lateinit var clearSearchButton: ImageView
     private lateinit var trackRecyclerView: RecyclerView
-    private lateinit var nothingFoundPlaceholder: ViewGroup
-    private lateinit var errorFoundPlaceholder: ViewGroup
+    private lateinit var placeholder: ViewGroup
     private lateinit var errorFoundRefreshButton: MaterialButton
     private lateinit var history: View
     private lateinit var clearHistoryButton: MaterialButton
     private lateinit var historyRecyclerView: RecyclerView
+    private lateinit var placeholderImage: ImageView
+    private lateinit var placeholderText: TextView
 
     private var songs = arrayListOf<Track>()
     private val historyList by lazy { SharedPreferences.getTrackHistory(this) }
@@ -56,8 +57,9 @@ class SearchActivity : AppCompatActivity() {
         editText = findViewById(R.id.edit_text)
         clearSearchButton = findViewById(R.id.search_clear_button)
         trackRecyclerView = findViewById(R.id.track_recycler_view)
-        nothingFoundPlaceholder = findViewById(R.id.nothing_found_placeholder)
-        errorFoundPlaceholder = findViewById(R.id.error_found_placeholder)
+        placeholder = findViewById(R.id.placeholder)
+        placeholderImage = findViewById(R.id.placeholder_image)
+        placeholderText = findViewById(R.id.placeholder_text)
         errorFoundRefreshButton = findViewById(R.id.error_found_refresh_button)
         clearHistoryButton = findViewById(R.id.clear_history_button)
         historyRecyclerView = findViewById(R.id.history_rv)
@@ -107,14 +109,12 @@ class SearchActivity : AppCompatActivity() {
                         p0?.isEmpty() == true &&
                         historyList.isNotEmpty()
                     trackRecyclerView.isVisible = !history.isVisible
-                    Log.d("TEST", "$p0 $p1 $p2 $p3")
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
                     clearSearchButton.isVisible = p0.toString().isNotEmpty()
                     if (p0.toString().isEmpty()) {
-                        nothingFoundPlaceholder.isVisible = false
-                        errorFoundPlaceholder.isVisible = false
+                        placeholder.isVisible = false
                         songs.clear()
                         trackRecyclerView.adapter?.notifyDataSetChanged()
                     }
@@ -174,16 +174,14 @@ class SearchActivity : AppCompatActivity() {
                 ) {
                     if (response.code() == 200) {
                         trackRecyclerView.isVisible = true
-                        errorFoundPlaceholder.isVisible = false
-                        nothingFoundPlaceholder.isVisible = false
+                        placeholder.isVisible = false
                         songs.clear()
                         if (response.body()?.results?.isNotEmpty() == true) {
                             songs.addAll(response.body()?.results!!)
                             trackRecyclerView.adapter?.notifyDataSetChanged()
                         } else {
                             trackRecyclerView.isVisible = false
-                            errorFoundPlaceholder.isVisible = false
-                            nothingFoundPlaceholder.isVisible = true
+                            showNothingFoundPlaceholder()
                         }
                     }
                 }
@@ -193,8 +191,7 @@ class SearchActivity : AppCompatActivity() {
                     t: Throwable,
                 ) {
                     trackRecyclerView.isVisible = false
-                    nothingFoundPlaceholder.isVisible = false
-                    errorFoundPlaceholder.isVisible = true
+                    showErrorPlaceholder()
                 }
             },
         )
@@ -210,6 +207,20 @@ class SearchActivity : AppCompatActivity() {
                 .getSerializable(TRACK_LIST_TAG)
                 ?.let { songs = it as ArrayList<Track> }
         }
+    }
+
+    private fun showNothingFoundPlaceholder() {
+        placeholderImage.setImageResource(R.drawable.nothing_found_pic)
+        placeholderText.setText(R.string.nothing_found)
+        errorFoundRefreshButton.isVisible = false
+        placeholder.isVisible = true
+    }
+
+    private fun showErrorPlaceholder() {
+        placeholderImage.setImageResource(R.drawable.error_found_pic)
+        placeholderText.setText(R.string.error_found)
+        errorFoundRefreshButton.isVisible = true
+        placeholder.isVisible = true
     }
 
     companion object {
