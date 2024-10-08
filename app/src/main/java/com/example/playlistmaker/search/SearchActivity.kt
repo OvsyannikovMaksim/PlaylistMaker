@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Build
@@ -28,6 +29,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+@SuppressLint("NotifyDataSetChanged")
 class SearchActivity : AppCompatActivity() {
     private var searchText: String? = null
     private lateinit var toolbar: Toolbar
@@ -101,7 +103,9 @@ class SearchActivity : AppCompatActivity() {
                 ) {
                     searchText = p0.toString()
                     history.isVisible =
-                        editText.hasFocus() && p0?.isEmpty() == true && historyList.isNotEmpty()
+                        editText.hasFocus() &&
+                        p0?.isEmpty() == true &&
+                        historyList.isNotEmpty()
                     trackRecyclerView.isVisible = !history.isVisible
                     Log.d("TEST", "$p0 $p1 $p2 $p3")
                 }
@@ -109,6 +113,8 @@ class SearchActivity : AppCompatActivity() {
                 override fun afterTextChanged(p0: Editable?) {
                     clearSearchButton.isVisible = p0.toString().isNotEmpty()
                     if (p0.toString().isEmpty()) {
+                        nothingFoundPlaceholder.isVisible = false
+                        errorFoundPlaceholder.isVisible = false
                         songs.clear()
                         trackRecyclerView.adapter?.notifyDataSetChanged()
                     }
