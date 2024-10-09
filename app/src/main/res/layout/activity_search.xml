@@ -1,122 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
-    
+    android:layout_height="match_parent">
+
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/search_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/back_button"
         app:title="@string/search_title"
-        app:titleTextAppearance="@style/AppBarTextStyle"
-        app:navigationIcon="@drawable/back_button"/>
+        app:titleTextAppearance="@style/AppBarTextStyle" />
 
     <FrameLayout
+        android:id="@+id/edit_text_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/standard_margin"
-        android:id="@+id/edit_text_layout"
-        app:layout_constraintTop_toBottomOf="@id/search_toolbar"
         android:layout_marginVertical="8dp"
+        android:background="@drawable/et_background"
         android:orientation="horizontal"
-        android:background="@drawable/et_background">
+        app:layout_constraintTop_toBottomOf="@id/search_toolbar">
 
         <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edit_text"
+            style="@style/MyEditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:id="@+id/edit_text"
-            android:hint="@string/search_title"
             android:layout_marginStart="10dp"
-            android:maxLines="1"
-            android:maxLength="32"
-            android:inputType="text"
-            android:singleLine="true"
             android:drawableStart="@drawable/et_icon"
             android:drawablePadding="10dp"
-            android:textColorHint="@color/et_icon_color"
-            android:textColor="@color/black"
-            android:theme="@style/MyEditTextTheme"
-            style="@style/MyEditTextStyle"
+            android:hint="@string/search_title"
             android:imeOptions="actionDone"
-            />
+            android:inputType="text"
+            android:maxLength="32"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textColorHint="@color/et_icon_color"
+            android:theme="@style/MyEditTextTheme" />
 
         <ImageView
             android:id="@+id/search_clear_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/et_clear"
-            android:padding="5dp"
-            android:layout_marginEnd="10dp"
             android:layout_gravity="end|center"
-            android:visibility="gone"/>
+            android:layout_marginEnd="10dp"
+            android:padding="5dp"
+            android:src="@drawable/et_clear"
+            android:visibility="gone" />
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/placeholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_layout"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
         android:orientation="vertical"
-        android:id="@+id/nothing_found_placeholder"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_layout">
+
         <ImageView
+            android:id="@+id/placeholder_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/nothing_found_pic"/>
+            android:gravity="center"
+            android:src="@drawable/error_found_pic" />
+
         <TextView
+            android:id="@+id/placeholder_text"
+            style="@style/placeholderText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/nothing_found"
-            style="@style/placeholderText"
-            android:layout_marginTop="@dimen/standard_margin"/>
+            android:layout_marginTop="@dimen/standard_margin"
+            android:text="@string/error_found"
+            android:textAlignment="center" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/error_found_refresh_button"
+            style="@style/ErrorPlaceholderButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_24"
+            android:text="@string/refresh_button_text" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_layout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical"
-        android:id="@+id/error_found_placeholder"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/error_found_pic"
-            android:gravity="center"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/error_found"
-            style="@style/placeholderText"
-            android:textAlignment="center"
-            android:layout_marginTop="@dimen/standard_margin"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/error_found_refresh_button"
-            android:text="@string/refresh_button_text"
-            style="@style/ErrorPlaceholderButton"
-            android:layout_marginTop="@dimen/margin_24"/>
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/history"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/track_recycler_view"
-        android:layout_marginTop="@dimen/standard_margin"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_layout"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_layout"
+        tools:visibility="visible">
+
+        <TextView
+            style="@style/placeholderText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/standard_margin"
+            android:layout_marginTop="42dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/history_text"
+            android:textAlignment="center" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/history_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="5"
+            tools:listitem="@layout/track_item_list" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/clear_history_button"
+            style="@style/ErrorPlaceholderButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_24"
+            android:text="@string/history_button_text" />
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/track_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/standard_margin"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_layout"
         tools:listitem="@layout/track_item_list"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        tools:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>
