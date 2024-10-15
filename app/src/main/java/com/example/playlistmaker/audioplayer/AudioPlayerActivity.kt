@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -23,6 +24,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var artistName: TextView
     private lateinit var trackTime: TextView
     private lateinit var album: TextView
+    private lateinit var albumTitle: TextView
     private lateinit var year: TextView
     private lateinit var genre: TextView
     private lateinit var country: TextView
@@ -57,17 +59,17 @@ class AudioPlayerActivity : AppCompatActivity() {
         genre = findViewById(R.id.genre)
         year = findViewById(R.id.year)
         album = findViewById(R.id.album)
+        albumTitle = findViewById(R.id.album_title)
         country = findViewById(R.id.country)
         setTrack()
     }
 
-    private fun getTrack(intent: Intent): Track? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private fun getTrack(intent: Intent): Track? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra(TRACK_INFO, Track::class.java)
         } else {
             intent.getSerializableExtra(TRACK_INFO) as Track
         }
-    }
 
     private fun setTrack() {
         Glide
@@ -81,6 +83,14 @@ class AudioPlayerActivity : AppCompatActivity() {
         artistName.text = trackInfo?.artistName
         genre.text = trackInfo?.primaryGenreName
         year.text = trackInfo?.releaseDate?.slice(0..3)
+        if (trackInfo?.collectionName == null)
+            {
+                album.isVisible = false
+                albumTitle.isVisible = false
+            } else {
+            album.isVisible = true
+            albumTitle.isVisible = true
+        }
         album.text = trackInfo?.collectionName
         country.text = trackInfo?.country
         trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackInfo?.trackTimeMillis)
