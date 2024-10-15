@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.api.Track
+import com.example.playlistmaker.audioplayer.AudioPlayerActivity
 import com.example.playlistmaker.utils.SharedPreferences
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -59,6 +60,7 @@ class TrackListAdapter(
                 .into(poster)
             trackItem.setOnClickListener {
                 SharedPreferences.putTrackToHistory(itemView.context, track)
+                AudioPlayerActivity.launch(itemView.context, track)
             }
         }
 
