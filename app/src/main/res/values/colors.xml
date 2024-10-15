@@ -15,4 +15,6 @@
     <color name="text_color">@color/black</color>
     <color name="inverted_text_color">@color/white</color>
     <color name="inverted_background">@color/black</color>
+    <color name="audioplayer_button">@color/yp_black</color>
+    <color name="audioplayer_text_info_title">@color/yp_grey</color>
 </resources>

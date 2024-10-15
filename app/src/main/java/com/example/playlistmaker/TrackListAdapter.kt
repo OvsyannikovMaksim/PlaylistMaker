@@ -1,7 +1,5 @@
 package com.example.playlistmaker
 
-import android.content.Context
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.api.Track
 import com.example.playlistmaker.audioplayer.AudioPlayerActivity
 import com.example.playlistmaker.utils.SharedPreferences
+import com.example.playlistmaker.utils.Utils.dpToPx
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -63,16 +62,5 @@ class TrackListAdapter(
                 AudioPlayerActivity.launch(itemView.context, track)
             }
         }
-
-        private fun dpToPx(
-            dp: Float,
-            context: Context,
-        ): Int =
-            TypedValue
-                .applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    dp,
-                    context.resources.displayMetrics,
-                ).toInt()
     }
 }
