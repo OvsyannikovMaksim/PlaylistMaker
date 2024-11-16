@@ -18,6 +18,7 @@
     </style>
 
     <style name="SettingsScreenButtons">
+        <item name="android:gravity">center_vertical</item>
         <item name="android:textSize">@dimen/text_size_16</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:fontWeight">400</item>
@@ -56,6 +57,19 @@
         <item name="android:fontWeight">500</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.0</item>
+    </style>
+
+    <style name="AudioPlayerTextBase">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
+    <style name="AudioPlayerTextInfo">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:paddingVertical">8dp</item>
     </style>
 
 </resources>

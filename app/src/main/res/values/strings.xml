@@ -19,5 +19,10 @@
     <string name="error_found">Communication problems\n\nThe download failed. Check your internet connection</string>
     <string name="refresh_button_text">Refresh</string>
     <string name="history_text">You found</string>
-    <string name="history_button_text">Refresh</string>
+    <string name="history_button_text">Clear</string>
+    <string name="country_title">Country</string>
+    <string name="genre_title">Genre</string>
+    <string name="year_title">Year</string>
+    <string name="album_title">Album</string>
+    <string name="duration_title">Duration</string>
 </resources>
