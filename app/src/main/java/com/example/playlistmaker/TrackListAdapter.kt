@@ -9,20 +9,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.api.Track
-import com.example.playlistmaker.audioplayer.AudioPlayerActivity
-import com.example.playlistmaker.utils.SharedPreferences
 import com.example.playlistmaker.utils.Utils.dpToPx
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TrackListAdapter(
     private val trackList: ArrayList<Track>,
+    private val clickListener: TrackClickListener,
 ) : RecyclerView.Adapter<TrackListAdapter.TrackListViewHolder>() {
     override fun onBindViewHolder(
         holder: TrackListViewHolder,
         position: Int,
     ) {
         holder.bind(trackList[position])
+        holder.itemView.setOnClickListener { clickListener.onTrackClick(trackList[position]) }
     }
 
     override fun onCreateViewHolder(
@@ -39,7 +39,6 @@ class TrackListAdapter(
     class TrackListViewHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
-        private val trackItem = itemView.findViewById<View>(R.id.track_item)
         private val poster = itemView.findViewById<ImageView>(R.id.poster)
         private val trackName = itemView.findViewById<TextView>(R.id.track_name)
         private val trackTime = itemView.findViewById<TextView>(R.id.track_time)
@@ -57,10 +56,10 @@ class TrackListAdapter(
                 .fitCenter()
                 .transform(RoundedCorners(dpToPx(2.0F, itemView.context)))
                 .into(poster)
-            trackItem.setOnClickListener {
-                SharedPreferences.putTrackToHistory(itemView.context, track)
-                AudioPlayerActivity.launch(itemView.context, track)
-            }
         }
+    }
+
+    fun interface TrackClickListener {
+        fun onTrackClick(track: Track)
     }
 }

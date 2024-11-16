@@ -5,14 +5,16 @@ import android.content.Context
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -23,6 +25,7 @@ import com.example.playlistmaker.TrackListAdapter
 import com.example.playlistmaker.api.RetrofitITunes
 import com.example.playlistmaker.api.SongResponse
 import com.example.playlistmaker.api.Track
+import com.example.playlistmaker.audioplayer.AudioPlayerActivity
 import com.example.playlistmaker.utils.SharedPreferences
 import com.google.android.material.button.MaterialButton
 import retrofit2.Call
@@ -43,9 +46,13 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyRecyclerView: RecyclerView
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderText: TextView
+    private lateinit var progressBar: ProgressBar
 
     private var songs = arrayListOf<Track>()
     private val historyList by lazy { SharedPreferences.getTrackHistory(this) }
+
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,14 +70,15 @@ class SearchActivity : AppCompatActivity() {
         errorFoundRefreshButton = findViewById(R.id.error_found_refresh_button)
         clearHistoryButton = findViewById(R.id.clear_history_button)
         historyRecyclerView = findViewById(R.id.history_rv)
+        progressBar = findViewById(R.id.progress_bar)
 
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener {
             finish()
         }
         searchText?.let { editText.setText(it) }
-        trackRecyclerView.adapter = TrackListAdapter(songs)
-        historyRecyclerView.adapter = TrackListAdapter(historyList)
+        trackRecyclerView.adapter = TrackListAdapter(songs, clickListener)
+        historyRecyclerView.adapter = TrackListAdapter(historyList, clickListener)
         val listener =
             OnSharedPreferenceChangeListener { _, key ->
                 if (key == SharedPreferences.TRACKHISTORY) {
@@ -109,15 +117,14 @@ class SearchActivity : AppCompatActivity() {
                         p0?.isEmpty() == true &&
                         historyList.isNotEmpty()
                     trackRecyclerView.isVisible = !history.isVisible
+                    songs.clear()
+                    trackRecyclerView.adapter?.notifyDataSetChanged()
+                    progressBar.isVisible = p0.toString().isNotEmpty()
+                    searchDebounce()
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
                     clearSearchButton.isVisible = p0.toString().isNotEmpty()
-                    if (p0.toString().isEmpty()) {
-                        placeholder.isVisible = false
-                        songs.clear()
-                        trackRecyclerView.adapter?.notifyDataSetChanged()
-                    }
                 }
             }
 
@@ -135,13 +142,6 @@ class SearchActivity : AppCompatActivity() {
         editText.setOnFocusChangeListener { _, hasFocus ->
             history.isVisible = hasFocus && editText.text.isEmpty() && historyList.isNotEmpty()
             trackRecyclerView.isVisible = !history.isVisible
-        }
-
-        editText.setOnEditorActionListener { textView, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchSong(textView.text.toString())
-            }
-            false
         }
 
         errorFoundRefreshButton.setOnClickListener {
@@ -173,10 +173,10 @@ class SearchActivity : AppCompatActivity() {
                     response: Response<SongResponse>,
                 ) {
                     if (response.code() == 200) {
-                        trackRecyclerView.isVisible = true
-                        placeholder.isVisible = false
+                        progressBar.isVisible = false
                         songs.clear()
                         if (response.body()?.results?.isNotEmpty() == true) {
+                            trackRecyclerView.isVisible = true
                             songs.addAll(response.body()?.results!!)
                             trackRecyclerView.adapter?.notifyDataSetChanged()
                         } else {
@@ -190,6 +190,7 @@ class SearchActivity : AppCompatActivity() {
                     call: Call<SongResponse>,
                     t: Throwable,
                 ) {
+                    progressBar.isVisible = false
                     trackRecyclerView.isVisible = false
                     showErrorPlaceholder()
                 }
@@ -223,8 +224,33 @@ class SearchActivity : AppCompatActivity() {
         placeholder.isVisible = true
     }
 
+    private val clickListener =
+        TrackListAdapter.TrackClickListener { track ->
+            if (clickDebounce()) {
+                SharedPreferences.putTrackToHistory(this@SearchActivity, track)
+                AudioPlayerActivity.launch(this@SearchActivity, track)
+            }
+        }
+
+    private fun clickDebounce(): Boolean  {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    private fun searchDebounce() {
+        val searchRunnable = Runnable { if (editText.text.isNotEmpty()) searchSong(editText.text.toString()) }
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
     companion object {
         const val EDIT_TEXT_TAG = "EditTextTag"
         const val TRACK_LIST_TAG = "TrackListTag"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }

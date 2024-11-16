@@ -2,6 +2,8 @@ package com.example.playlistmaker.utils
 
 import android.content.Context
 import android.util.TypedValue
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 object Utils {
     fun dpToPx(
@@ -14,4 +16,6 @@ object Utils {
                 dp,
                 context.resources.displayMetrics,
             ).toInt()
+
+    fun timeConverter(time: Long?): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
 }

@@ -2,22 +2,30 @@ package com.example.playlistmaker.audioplayer
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.api.Track
+import com.example.playlistmaker.utils.Utils
 import com.example.playlistmaker.utils.Utils.dpToPx
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
+
+    private val handler = Handler(Looper.getMainLooper())
+    private var playerState = PlayerState.Default
+    private var mediaPlayer = MediaPlayer()
     private var trackInfo: Track? = null
     private lateinit var poster: ImageView
     private lateinit var trackName: TextView
@@ -28,18 +36,8 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var year: TextView
     private lateinit var genre: TextView
     private lateinit var country: TextView
-
-    companion object {
-        private const val TRACK_INFO = "TRACK_INFO"
-
-        fun launch(
-            context: Context,
-            track: Track,
-        ) = context.startActivity(
-            Intent(context, AudioPlayerActivity::class.java)
-                .putExtra(TRACK_INFO, track),
-        )
-    }
+    private lateinit var playBtn: ImageButton
+    private lateinit var currentTime: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +59,43 @@ class AudioPlayerActivity : AppCompatActivity() {
         album = findViewById(R.id.album)
         albumTitle = findViewById(R.id.album_title)
         country = findViewById(R.id.country)
+        playBtn = findViewById(R.id.play_button)
+        currentTime = findViewById(R.id.current_time)
+
         setTrack()
+        prepareMediaPlayer()
+        playBtn.setOnClickListener {
+            when (playerState) {
+                PlayerState.Paused, PlayerState.Prepared -> toPlayingState()
+                PlayerState.Playing -> toPauseState()
+                PlayerState.Default -> null
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        toPauseState()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        handler.removeCallbacks(updateTimer)
+    }
+
+    private fun toPauseState()  {
+        mediaPlayer.pause()
+        playBtn.background = getDrawable(this, R.drawable.play_button)
+        playerState = PlayerState.Paused
+        handler.removeCallbacks(updateTimer)
+    }
+
+    private fun toPlayingState()  {
+        mediaPlayer.start()
+        playBtn.background = getDrawable(this, R.drawable.pause_button)
+        playerState = PlayerState.Playing
+        handler.postDelayed(updateTimer, REFRESH_TIMER_DELAY_MILLIS)
     }
 
     private fun getTrack(intent: Intent): Track? =
@@ -83,16 +117,59 @@ class AudioPlayerActivity : AppCompatActivity() {
         artistName.text = trackInfo?.artistName
         genre.text = trackInfo?.primaryGenreName
         year.text = trackInfo?.releaseDate?.slice(0..3)
-        if (trackInfo?.collectionName == null)
-            {
-                album.isVisible = false
-                albumTitle.isVisible = false
-            } else {
+        if (trackInfo?.collectionName == null) {
+            album.isVisible = false
+            albumTitle.isVisible = false
+        } else {
             album.isVisible = true
             albumTitle.isVisible = true
         }
         album.text = trackInfo?.collectionName
         country.text = trackInfo?.country
-        trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackInfo?.trackTimeMillis)
+        trackTime.text = Utils.timeConverter(trackInfo?.trackTimeMillis)
+    }
+
+    private fun prepareMediaPlayer() {
+        mediaPlayer.setDataSource(trackInfo?.previewUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playerState = PlayerState.Prepared
+        }
+        mediaPlayer.setOnCompletionListener {
+            playerState = PlayerState.Prepared
+            handler.removeCallbacks(updateTimer)
+            currentTime.text = getString(R.string.default_current_time)
+            playBtn.background = getDrawable(this, R.drawable.play_button)
+        }
+    }
+
+    private val updateTimer =
+        object : Runnable {
+            override fun run() {
+                currentTime.text = Utils.timeConverter(mediaPlayer.currentPosition.toLong())
+                handler.postDelayed(this, REFRESH_TIMER_DELAY_MILLIS)
+            }
+        }
+
+    enum class PlayerState(
+        val id: Int,
+    ) {
+        Default(0),
+        Prepared(1),
+        Playing(2),
+        Paused(3),
+    }
+
+    companion object {
+        private const val TRACK_INFO = "TRACK_INFO"
+        private const val REFRESH_TIMER_DELAY_MILLIS = 500L
+
+        fun launch(
+            context: Context,
+            track: Track,
+        ) = context.startActivity(
+            Intent(context, AudioPlayerActivity::class.java)
+                .putExtra(TRACK_INFO, track),
+        )
     }
 }
