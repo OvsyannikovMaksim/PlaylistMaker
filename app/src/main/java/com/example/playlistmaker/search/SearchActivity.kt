@@ -50,6 +50,7 @@ class SearchActivity : AppCompatActivity() {
 
     private var songs = arrayListOf<Track>()
     private val historyList by lazy { SharedPreferences.getTrackHistory(this) }
+    private var listener: OnSharedPreferenceChangeListener? = null
 
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
@@ -79,9 +80,9 @@ class SearchActivity : AppCompatActivity() {
         searchText?.let { editText.setText(it) }
         trackRecyclerView.adapter = TrackListAdapter(songs, clickListener)
         historyRecyclerView.adapter = TrackListAdapter(historyList, clickListener)
-        val listener =
+        listener =
             OnSharedPreferenceChangeListener { _, key ->
-                if (key == SharedPreferences.TRACKHISTORY) {
+                if (key == SharedPreferences.getTrackHistoryTag()) {
                     val tracks = SharedPreferences.getTrackHistory(this)
                     historyList.apply {
                         clear()
@@ -91,9 +92,7 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
 
-        SharedPreferences
-            .getSharedPreferences(this)
-            .registerOnSharedPreferenceChangeListener(listener)
+        listener?.let { SharedPreferences.registerChangeListener(this, it) }
 
         val textWatcher =
             object : TextWatcher {
@@ -163,6 +162,11 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchText = savedInstanceState.getString(EDIT_TEXT_TAG)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listener?.let { SharedPreferences.unregisterChangeListener(this, it) }
     }
 
     private fun searchSong(text: String) {
