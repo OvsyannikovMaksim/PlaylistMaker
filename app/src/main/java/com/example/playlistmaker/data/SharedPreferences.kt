@@ -1,15 +1,14 @@
-package com.example.playlistmaker.utils
+package com.example.playlistmaker.data
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
-import com.example.playlistmaker.api.Track
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 object SharedPreferences {
-    private fun getSharedPreferences(context: Context): SharedPreferences =
-        context.getSharedPreferences(MYSHAREDPREF, Context.MODE_PRIVATE)
+    private fun getSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(MYSHAREDPREF, Context.MODE_PRIVATE)
 
     private val gson = Gson()
 
@@ -20,8 +19,7 @@ object SharedPreferences {
         getSharedPreferences(context).edit().putBoolean(NIGTHMODE, isNightMode).apply()
     }
 
-    fun getNightMode(context: Context): Boolean =
-        getSharedPreferences(context).getBoolean(NIGTHMODE, false)
+    fun getNightMode(context: Context): Boolean = getSharedPreferences(context).getBoolean(NIGTHMODE, false)
 
     fun putTrackToHistory(
         context: Context,
@@ -50,11 +48,17 @@ object SharedPreferences {
         getSharedPreferences(context).edit().remove(TRACKHISTORY).apply()
     }
 
-    fun registerChangeListener(context: Context, listener: OnSharedPreferenceChangeListener) {
+    fun registerChangeListener(
+        context: Context,
+        listener: OnSharedPreferenceChangeListener,
+    ) {
         getSharedPreferences(context).registerOnSharedPreferenceChangeListener(listener)
     }
 
-    fun unregisterChangeListener(context: Context, listener: OnSharedPreferenceChangeListener) {
+    fun unregisterChangeListener(
+        context: Context,
+        listener: OnSharedPreferenceChangeListener,
+    ) {
         getSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(listener)
     }
 
