@@ -14,4 +14,12 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:titleTextColor">@color/white</item>
     </style>
+
+    <style name="Theme.PlayListMaker.SearchActivity" parent="Base.Theme.PlayListMaker">
+        <item name="android:background">@color/yp_black</item>
+    </style>
+
+    <style name="Theme.PlayListMaker.AudioPlayerActivity" parent="Base.Theme.PlayListMaker">
+        <item name="android:background">@color/yp_black</item>
+    </style>
 </resources>
