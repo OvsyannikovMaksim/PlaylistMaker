@@ -25,4 +25,5 @@
     <string name="year_title">Year</string>
     <string name="album_title">Album</string>
     <string name="duration_title">Duration</string>
+    <string name="default_current_time">00:00</string>
 </resources>
