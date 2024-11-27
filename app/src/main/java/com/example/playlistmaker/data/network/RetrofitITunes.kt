@@ -20,10 +20,10 @@ object RetrofitITunes : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         if (dto is SongRequest) {
-            val resp = iTunesApi.search(dto.expression).execute()
-            val result = resp.body() ?: Response()
+            val response = iTunesApi.search(dto.expression).execute()
+            val result = response.body() ?: Response()
             return result.apply {
-                resultCode = resp.code()
+                resultCode = response.code()
             }
         } else {
             return Response().apply { resultCode = 400 }
