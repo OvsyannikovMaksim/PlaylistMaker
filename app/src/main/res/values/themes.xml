@@ -16,6 +16,14 @@
         <item name="android:titleTextColor">@color/black</item>
     </style>
 
+    <style name="Theme.PlayListMaker.SearchActivity" parent="Theme.PlayListMaker">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="Theme.PlayListMaker.AudioPlayerActivity" parent="Base.Theme.PlayListMaker">
+        <item name="android:background">@color/white</item>
+    </style>
+
     <style name="MyEditTextTheme" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/main_blue</item>
         <item name="colorControlActivated">@color/main_blue</item>

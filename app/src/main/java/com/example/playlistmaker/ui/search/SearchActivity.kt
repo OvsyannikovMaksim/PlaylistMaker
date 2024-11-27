@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search
+package com.example.playlistmaker.ui.search
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,20 +21,18 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.TrackListAdapter
-import com.example.playlistmaker.api.RetrofitITunes
-import com.example.playlistmaker.api.SongResponse
-import com.example.playlistmaker.api.Track
-import com.example.playlistmaker.audioplayer.AudioPlayerActivity
-import com.example.playlistmaker.utils.SharedPreferences
+import com.example.playlistmaker.data.SharedPreferences
+import com.example.playlistmaker.domain.api.SongInteractor
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.TrackListAdapter
+import com.example.playlistmaker.ui.audioplayer.AudioPlayerActivity
+import com.example.playlistmaker.utils.Creator
 import com.google.android.material.button.MaterialButton
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 @SuppressLint("NotifyDataSetChanged")
 class SearchActivity : AppCompatActivity() {
     private var searchText: String? = null
+
     private lateinit var toolbar: Toolbar
     private lateinit var editText: EditText
     private lateinit var clearSearchButton: ImageView
@@ -50,6 +48,9 @@ class SearchActivity : AppCompatActivity() {
 
     private var songs = arrayListOf<Track>()
     private val historyList by lazy { SharedPreferences.getTrackHistory(this) }
+    private var listener: OnSharedPreferenceChangeListener? = null
+
+    private lateinit var songInteractor: SongInteractor
 
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
@@ -79,9 +80,9 @@ class SearchActivity : AppCompatActivity() {
         searchText?.let { editText.setText(it) }
         trackRecyclerView.adapter = TrackListAdapter(songs, clickListener)
         historyRecyclerView.adapter = TrackListAdapter(historyList, clickListener)
-        val listener =
+        listener =
             OnSharedPreferenceChangeListener { _, key ->
-                if (key == SharedPreferences.TRACKHISTORY) {
+                if (key == SharedPreferences.getTrackHistoryTag()) {
                     val tracks = SharedPreferences.getTrackHistory(this)
                     historyList.apply {
                         clear()
@@ -91,9 +92,9 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
 
-        SharedPreferences
-            .getSharedPreferences(this)
-            .registerOnSharedPreferenceChangeListener(listener)
+        listener?.let { SharedPreferences.registerChangeListener(this, it) }
+
+        songInteractor = Creator.getSongInteractor()
 
         val textWatcher =
             object : TextWatcher {
@@ -136,6 +137,7 @@ class SearchActivity : AppCompatActivity() {
             clearSearchButton.isVisible = false
             songs.clear()
             trackRecyclerView.adapter?.notifyDataSetChanged()
+            placeholder.isVisible = false
         }
 
         editText.addTextChangedListener(textWatcher)
@@ -165,19 +167,22 @@ class SearchActivity : AppCompatActivity() {
         searchText = savedInstanceState.getString(EDIT_TEXT_TAG)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        listener?.let { SharedPreferences.unregisterChangeListener(this, it) }
+    }
+
     private fun searchSong(text: String) {
-        RetrofitITunes.iTunesApi.search(text).enqueue(
-            object : Callback<SongResponse> {
-                override fun onResponse(
-                    call: Call<SongResponse>,
-                    response: Response<SongResponse>,
-                ) {
-                    if (response.code() == 200) {
+        songInteractor.searchSong(
+            text,
+            object : SongInteractor.SongConsumer {
+                override fun onSuccess(foundSongs: List<Track>) {
+                    runOnUiThread {
                         progressBar.isVisible = false
                         songs.clear()
-                        if (response.body()?.results?.isNotEmpty() == true) {
+                        if (foundSongs.isNotEmpty()) {
                             trackRecyclerView.isVisible = true
-                            songs.addAll(response.body()?.results!!)
+                            songs.addAll(foundSongs)
                             trackRecyclerView.adapter?.notifyDataSetChanged()
                         } else {
                             trackRecyclerView.isVisible = false
@@ -186,13 +191,12 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(
-                    call: Call<SongResponse>,
-                    t: Throwable,
-                ) {
-                    progressBar.isVisible = false
-                    trackRecyclerView.isVisible = false
-                    showErrorPlaceholder()
+                override fun onFailure(exception: Exception) {
+                    runOnUiThread {
+                        progressBar.isVisible = false
+                        trackRecyclerView.isVisible = false
+                        showErrorPlaceholder()
+                    }
                 }
             },
         )
@@ -232,7 +236,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-    private fun clickDebounce(): Boolean  {
+    private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
@@ -242,7 +246,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchDebounce() {
-        val searchRunnable = Runnable { if (editText.text.isNotEmpty()) searchSong(editText.text.toString()) }
+        val searchRunnable =
+            Runnable { if (editText.text.isNotEmpty()) searchSong(editText.text.toString()) }
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }

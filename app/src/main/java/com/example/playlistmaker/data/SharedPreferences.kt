@@ -1,13 +1,16 @@
-package com.example.playlistmaker.utils
+package com.example.playlistmaker.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.playlistmaker.api.Track
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 object SharedPreferences {
-    fun getSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(MYSHAREDPREF, 0)
+    private fun getSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(MYSHAREDPREF, Context.MODE_PRIVATE)
+
+    private val gson = Gson()
 
     fun putNightMode(
         context: Context,
@@ -32,23 +35,36 @@ object SharedPreferences {
                 add(0, track)
             }
         }
-        getSharedPreferences(context).edit().putString(TRACKHISTORY, Gson().toJson(trackList)).apply()
+        getSharedPreferences(context).edit().putString(TRACKHISTORY, gson.toJson(trackList)).apply()
     }
 
     fun getTrackHistory(context: Context): ArrayList<Track> {
         val json = getSharedPreferences(context).getString(TRACKHISTORY, null)
-        return if (json != null) {
-            Gson().fromJson(json, object : TypeToken<ArrayList<Track>>() {}.type)
-        } else {
-            arrayListOf()
-        }
+        return json?.let { gson.fromJson(json, object : TypeToken<ArrayList<Track>>() {}.type) }
+            ?: arrayListOf()
     }
 
     fun clearTrackHistory(context: Context) {
         getSharedPreferences(context).edit().remove(TRACKHISTORY).apply()
     }
 
+    fun registerChangeListener(
+        context: Context,
+        listener: OnSharedPreferenceChangeListener,
+    ) {
+        getSharedPreferences(context).registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unregisterChangeListener(
+        context: Context,
+        listener: OnSharedPreferenceChangeListener,
+    ) {
+        getSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun getTrackHistoryTag(): String = TRACKHISTORY
+
     private const val MYSHAREDPREF = "PLAYLISTSHAREDPREF"
     private const val NIGTHMODE = "NIGHTMODE"
-    const val TRACKHISTORY = "TRACKHISTORY"
+    private const val TRACKHISTORY = "TRACKHISTORY"
 }

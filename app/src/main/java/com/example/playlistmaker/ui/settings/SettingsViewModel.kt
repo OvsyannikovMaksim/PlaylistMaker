@@ -1,4 +1,4 @@
-package com.example.playlistmaker.settings
+package com.example.playlistmaker.ui.settings
 
 import android.app.Application
 import android.content.Intent
@@ -6,7 +6,7 @@ import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.utils.SharedPreferences
+import com.example.playlistmaker.data.SharedPreferences
 
 class SettingsViewModel(
     private val application: Application,

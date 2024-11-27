@@ -1,4 +1,4 @@
-package com.example.playlistmaker.audioplayer
+package com.example.playlistmaker.ui.audioplayer
 
 import android.content.Context
 import android.content.Intent
@@ -17,12 +17,11 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.api.Track
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.utils.Utils
 import com.example.playlistmaker.utils.Utils.dpToPx
 
 class AudioPlayerActivity : AppCompatActivity() {
-
     private val handler = Handler(Looper.getMainLooper())
     private var playerState = PlayerState.Default
     private var mediaPlayer = MediaPlayer()
@@ -84,14 +83,14 @@ class AudioPlayerActivity : AppCompatActivity() {
         handler.removeCallbacks(updateTimer)
     }
 
-    private fun toPauseState()  {
+    private fun toPauseState() {
         mediaPlayer.pause()
         playBtn.background = getDrawable(this, R.drawable.play_button)
         playerState = PlayerState.Paused
         handler.removeCallbacks(updateTimer)
     }
 
-    private fun toPlayingState()  {
+    private fun toPlayingState() {
         mediaPlayer.start()
         playBtn.background = getDrawable(this, R.drawable.pause_button)
         playerState = PlayerState.Playing
@@ -126,7 +125,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
         album.text = trackInfo?.collectionName
         country.text = trackInfo?.country
-        trackTime.text = Utils.timeConverter(trackInfo?.trackTimeMillis)
+        trackTime.text = trackInfo?.trackTime
     }
 
     private fun prepareMediaPlayer() {

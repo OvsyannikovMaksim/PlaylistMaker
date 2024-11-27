@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +8,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.api.Track
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.utils.Utils.dpToPx
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class TrackListAdapter(
     private val trackList: ArrayList<Track>,
@@ -46,8 +45,7 @@ class TrackListAdapter(
 
         fun bind(track: Track) {
             trackName.text = track.trackName
-            trackTime.text =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+            trackTime.text = track.trackTime
             artists.text = track.artistName
             Glide
                 .with(itemView)

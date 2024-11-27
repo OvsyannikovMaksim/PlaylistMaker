@@ -1,4 +1,4 @@
-package com.example.playlistmaker.settings
+package com.example.playlistmaker.ui.settings
 
 import android.os.Bundle
 import android.widget.TextView
@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
-import com.example.playlistmaker.utils.SharedPreferences
+import com.example.playlistmaker.data.SharedPreferences
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
