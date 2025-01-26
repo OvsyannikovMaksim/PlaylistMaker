@@ -13,6 +13,4 @@ interface SongInteractor {
 
         fun onFailure(exception: Exception)
     }
-
-    interface Song
 }
