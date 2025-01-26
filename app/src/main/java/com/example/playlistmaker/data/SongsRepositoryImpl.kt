@@ -3,8 +3,8 @@ package com.example.playlistmaker.data
 import android.util.Log
 import com.example.playlistmaker.data.dto.SongRequest
 import com.example.playlistmaker.data.dto.SongResponse
-import com.example.playlistmaker.domain.api.SongsRepository
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.SongsRepository
+import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.utils.Utils
 
 class SongsRepositoryImpl(

@@ -1,46 +1,28 @@
 package com.example.playlistmaker.ui.settings
 
-import android.app.Application
-import android.content.Intent
-import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
-import com.example.playlistmaker.App
-import com.example.playlistmaker.R
-import com.example.playlistmaker.data.SharedPreferences
+import androidx.lifecycle.ViewModel
+import com.example.playlistmaker.domain.settings.SettingsInteractor
+import com.example.playlistmaker.domain.sharing.SharingInteractor
 
 class SettingsViewModel(
-    private val application: Application,
-) : AndroidViewModel(application) {
+    private val sharingInteractor: SharingInteractor,
+    private val settingsInteractor: SettingsInteractor,
+) : ViewModel() {
+    val isDarkTheme = settingsInteractor.getThemeSettings()
+
     fun startShareIntent() {
-        val intent =
-            Intent(Intent.ACTION_SEND).apply {
-                putExtra(Intent.EXTRA_TEXT, application.getString(R.string.practikum_link))
-                type = "text/plain"
-            }
-        application.startActivity(Intent.createChooser(intent, application.getString(R.string.chooser_text)))
+        sharingInteractor.shareApp()
     }
 
     fun startSupportIntent() {
-        val intent =
-            Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(application.getString(R.string.email_to)))
-                putExtra(Intent.EXTRA_SUBJECT, application.getString(R.string.email_subject))
-                putExtra(Intent.EXTRA_TEXT, application.getString(R.string.email_body))
-            }
-        application.startActivity(intent)
+        sharingInteractor.openSupport()
     }
 
     fun startEulaIntent() {
-        val intent =
-            Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(application.getString(R.string.eula_link))
-            }
-        application.startActivity(intent)
+        sharingInteractor.openTerms()
     }
 
     fun changeThemeMode(checked: Boolean) {
-        (application as App).switchTheme(checked)
-        SharedPreferences.putNightMode(application, checked)
+        settingsInteractor.updateThemeSetting(checked)
     }
 }

@@ -3,7 +3,7 @@ package com.example.playlistmaker.data
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.model.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

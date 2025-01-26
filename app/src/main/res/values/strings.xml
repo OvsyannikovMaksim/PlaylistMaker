@@ -9,11 +9,7 @@
     <string name="settings_eula_text">Eula</string>
     <string name="settings_title">Settings</string>
     <string name="search_title">Search</string>
-    <string name="email_subject">Message to the developers of the Playlist Maker app</string>
-    <string name="email_body">Thanks to the developers for the cool app!</string>
-    <string name="email_to">maksimov99997@yandex.ru</string>
     <string name="eula_link">https://yandex.ru/legal/practicum_offer/</string>
-    <string name="practikum_link">https://practicum.yandex.ru/android-developer</string>
     <string name="chooser_text">Share via</string>
     <string name="nothing_found">Nothing found</string>
     <string name="error_found">Communication problems\n\nThe download failed. Check your internet connection</string>

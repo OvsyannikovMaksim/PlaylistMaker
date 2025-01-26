@@ -22,8 +22,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.SharedPreferences
-import com.example.playlistmaker.domain.api.SongInteractor
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.SongInteractor
+import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.TrackListAdapter
 import com.example.playlistmaker.ui.audioplayer.AudioPlayerActivity
 import com.example.playlistmaker.utils.Creator

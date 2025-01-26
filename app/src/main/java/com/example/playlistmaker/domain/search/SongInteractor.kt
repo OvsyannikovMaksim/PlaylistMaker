@@ -1,6 +1,6 @@
-package com.example.playlistmaker.domain.api
+package com.example.playlistmaker.domain.search
 
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.model.Track
 
 interface SongInteractor {
     fun searchSong(
@@ -8,7 +8,7 @@ interface SongInteractor {
         consumer: SongConsumer,
     )
 
-    interface SongConsumer  {
+    interface SongConsumer {
         fun onSuccess(foundSongs: List<Track>)
 
         fun onFailure(exception: Exception)
