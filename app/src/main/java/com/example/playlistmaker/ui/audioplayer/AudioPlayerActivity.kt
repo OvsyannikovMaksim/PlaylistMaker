@@ -7,63 +7,48 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.utils.Utils
 import com.example.playlistmaker.utils.Utils.dpToPx
 
 class AudioPlayerActivity : AppCompatActivity() {
-    private val handler = Handler(Looper.getMainLooper())
-    private var playerState = PlayerState.Default
-    private var mediaPlayer = MediaPlayer()
+    private var _binding: ActivityAudioplayerBinding? = null
+    private val binding get() = _binding!!
+    private val viewModel by lazy { ViewModelProvider(this)[AudioPlayerViewModel::class.java] }
+
+    private lateinit var playerState: PlayerState
     private var trackInfo: Track? = null
-    private lateinit var poster: ImageView
-    private lateinit var trackName: TextView
-    private lateinit var artistName: TextView
-    private lateinit var trackTime: TextView
-    private lateinit var album: TextView
-    private lateinit var albumTitle: TextView
-    private lateinit var year: TextView
-    private lateinit var genre: TextView
-    private lateinit var country: TextView
-    private lateinit var playBtn: ImageButton
-    private lateinit var currentTime: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _binding = ActivityAudioplayerBinding.inflate(layoutInflater)
         trackInfo = getTrack(intent)
-        setContentView(R.layout.activity_audioplayer)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             finish()
         }
 
-        poster = findViewById(R.id.poster)
-        trackName = findViewById(R.id.track_name)
-        artistName = findViewById(R.id.artist_name)
-        trackTime = findViewById(R.id.track_time)
-        genre = findViewById(R.id.genre)
-        year = findViewById(R.id.year)
-        album = findViewById(R.id.album)
-        albumTitle = findViewById(R.id.album_title)
-        country = findViewById(R.id.country)
-        playBtn = findViewById(R.id.play_button)
-        currentTime = findViewById(R.id.current_time)
+        viewModel.getPlayerState().observe(this) {
+            playerState = it
+        }
+        viewModel.getCurrentTrackTime().observe(this){
+            binding.currentTime.text = it
+        }
 
         setTrack()
         prepareMediaPlayer()
-        playBtn.setOnClickListener {
+        binding.playButton.setOnClickListener {
             when (playerState) {
                 PlayerState.Paused, PlayerState.Prepared -> toPlayingState()
                 PlayerState.Playing -> toPauseState()
@@ -79,22 +64,17 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
-        handler.removeCallbacks(updateTimer)
+        viewModel.releasePlayer()
     }
 
     private fun toPauseState() {
-        mediaPlayer.pause()
-        playBtn.background = getDrawable(this, R.drawable.play_button)
-        playerState = PlayerState.Paused
-        handler.removeCallbacks(updateTimer)
+        viewModel.pausePlayer()
+        binding.playButton.background = getDrawable(this, R.drawable.play_button)
     }
 
     private fun toPlayingState() {
-        mediaPlayer.start()
-        playBtn.background = getDrawable(this, R.drawable.pause_button)
-        playerState = PlayerState.Playing
-        handler.postDelayed(updateTimer, REFRESH_TIMER_DELAY_MILLIS)
+        viewModel.startPlayer()
+        binding.playButton.background = getDrawable(this, R.drawable.pause_button)
     }
 
     private fun getTrack(intent: Intent): Track? =
@@ -111,57 +91,31 @@ class AudioPlayerActivity : AppCompatActivity() {
             .placeholder(R.drawable.placeholder)
             .fitCenter()
             .transform(RoundedCorners(dpToPx(8.0F, this)))
-            .into(poster)
-        trackName.text = trackInfo?.trackName
-        artistName.text = trackInfo?.artistName
-        genre.text = trackInfo?.primaryGenreName
-        year.text = trackInfo?.releaseDate?.slice(0..3)
-        if (trackInfo?.collectionName == null) {
-            album.isVisible = false
-            albumTitle.isVisible = false
-        } else {
-            album.isVisible = true
-            albumTitle.isVisible = true
+            .into(binding.poster)
+        with(binding) {
+            trackName.text = trackInfo?.trackName
+            artistName.text = trackInfo?.artistName
+            genre.text = trackInfo?.primaryGenreName
+            year.text = trackInfo?.releaseDate?.slice(0..3)
+            if (trackInfo?.collectionName == null) {
+                album.isVisible = false
+                albumTitle.isVisible = false
+            } else {
+                album.isVisible = true
+                albumTitle.isVisible = true
+            }
+            binding.album.text = trackInfo?.collectionName
+            binding.country.text = trackInfo?.country
+            binding.trackTime.text = trackInfo?.trackTime
         }
-        album.text = trackInfo?.collectionName
-        country.text = trackInfo?.country
-        trackTime.text = trackInfo?.trackTime
     }
 
     private fun prepareMediaPlayer() {
-        mediaPlayer.setDataSource(trackInfo?.previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playerState = PlayerState.Prepared
-        }
-        mediaPlayer.setOnCompletionListener {
-            playerState = PlayerState.Prepared
-            handler.removeCallbacks(updateTimer)
-            currentTime.text = getString(R.string.default_current_time)
-            playBtn.background = getDrawable(this, R.drawable.play_button)
-        }
-    }
-
-    private val updateTimer =
-        object : Runnable {
-            override fun run() {
-                currentTime.text = Utils.timeConverter(mediaPlayer.currentPosition.toLong())
-                handler.postDelayed(this, REFRESH_TIMER_DELAY_MILLIS)
-            }
-        }
-
-    enum class PlayerState(
-        val id: Int,
-    ) {
-        Default(0),
-        Prepared(1),
-        Playing(2),
-        Paused(3),
+        viewModel.prepareMediaPlayer(trackInfo?.previewUrl)
     }
 
     companion object {
         private const val TRACK_INFO = "TRACK_INFO"
-        private const val REFRESH_TIMER_DELAY_MILLIS = 500L
 
         fun launch(
             context: Context,

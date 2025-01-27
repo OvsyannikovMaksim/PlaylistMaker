@@ -9,92 +9,61 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.SharedPreferences
-import com.example.playlistmaker.domain.search.SongInteractor
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.TrackListAdapter
 import com.example.playlistmaker.ui.audioplayer.AudioPlayerActivity
-import com.example.playlistmaker.utils.Creator
-import com.google.android.material.button.MaterialButton
 
 @SuppressLint("NotifyDataSetChanged")
 class SearchActivity : AppCompatActivity() {
     private var searchText: String? = null
-
-    private lateinit var toolbar: Toolbar
-    private lateinit var editText: EditText
-    private lateinit var clearSearchButton: ImageView
-    private lateinit var trackRecyclerView: RecyclerView
-    private lateinit var placeholder: ViewGroup
-    private lateinit var errorFoundRefreshButton: MaterialButton
-    private lateinit var history: View
-    private lateinit var clearHistoryButton: MaterialButton
-    private lateinit var historyRecyclerView: RecyclerView
-    private lateinit var placeholderImage: ImageView
-    private lateinit var placeholderText: TextView
-    private lateinit var progressBar: ProgressBar
+    private var _binding: ActivitySearchBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var searchViewModel: SearchViewModel
 
     private var songs = arrayListOf<Track>()
-    private val historyList by lazy { SharedPreferences.getTrackHistory(this) }
+    private var historyList = arrayListOf<Track>()
     private var listener: OnSharedPreferenceChangeListener? = null
-
-    private lateinit var songInteractor: SongInteractor
 
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+        _binding = ActivitySearchBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
         savedInstanceState?.let { restoreTrackList(it) }
 
-        history = findViewById(R.id.history)
-        toolbar = findViewById(R.id.search_toolbar)
-        editText = findViewById(R.id.edit_text)
-        clearSearchButton = findViewById(R.id.search_clear_button)
-        trackRecyclerView = findViewById(R.id.track_recycler_view)
-        placeholder = findViewById(R.id.placeholder)
-        placeholderImage = findViewById(R.id.placeholder_image)
-        placeholderText = findViewById(R.id.placeholder_text)
-        errorFoundRefreshButton = findViewById(R.id.error_found_refresh_button)
-        clearHistoryButton = findViewById(R.id.clear_history_button)
-        historyRecyclerView = findViewById(R.id.history_rv)
-        progressBar = findViewById(R.id.progress_bar)
-
-        setSupportActionBar(toolbar)
-        toolbar.setNavigationOnClickListener {
+        setSupportActionBar(binding.searchToolbar)
+        binding.searchToolbar.setNavigationOnClickListener {
             finish()
         }
-        searchText?.let { editText.setText(it) }
-        trackRecyclerView.adapter = TrackListAdapter(songs, clickListener)
-        historyRecyclerView.adapter = TrackListAdapter(historyList, clickListener)
-        listener =
-            OnSharedPreferenceChangeListener { _, key ->
-                if (key == SharedPreferences.getTrackHistoryTag()) {
-                    val tracks = SharedPreferences.getTrackHistory(this)
-                    historyList.apply {
-                        clear()
-                        addAll(tracks)
-                    }
-                    historyRecyclerView.adapter?.notifyDataSetChanged()
-                }
-            }
 
-        listener?.let { SharedPreferences.registerChangeListener(this, it) }
+        searchViewModel = ViewModelProvider(
+            this,
+            SearchViewModelFactory.getViewModelFactory(),
+        )[SearchViewModel::class.java]
 
-        songInteractor = Creator.getSongInteractor()
+        searchViewModel.getScreenState().observe(this) {
+            render(it)
+        }
+
+        searchViewModel.getHistoryList().observe(this) {
+            historyList = it
+            binding.historyRv.adapter?.notifyDataSetChanged()
+        }
+
+        binding.trackRecyclerView.adapter = TrackListAdapter(songs, clickListener)
+        binding.historyRv.adapter = TrackListAdapter(historyList, clickListener)
+        searchText?.let { binding.editText.setText(it) }
+
 
         val textWatcher =
             object : TextWatcher {
@@ -113,46 +82,47 @@ class SearchActivity : AppCompatActivity() {
                     p3: Int,
                 ) {
                     searchText = p0.toString()
-                    history.isVisible =
-                        editText.hasFocus() &&
-                        p0?.isEmpty() == true &&
-                        historyList.isNotEmpty()
-                    trackRecyclerView.isVisible = !history.isVisible
+                    binding.history.isVisible =
+                        binding.editText.hasFocus() &&
+                                p0?.isEmpty() == true &&
+                                historyList.isNotEmpty()
+                    binding.trackRecyclerView.isVisible = !binding.history.isVisible
                     songs.clear()
-                    trackRecyclerView.adapter?.notifyDataSetChanged()
-                    progressBar.isVisible = p0.toString().isNotEmpty()
+                    binding.trackRecyclerView.adapter?.notifyDataSetChanged()
+                    binding.progressBar.isVisible = p0.toString().isNotEmpty()
                     searchDebounce()
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
-                    clearSearchButton.isVisible = p0.toString().isNotEmpty()
+                    binding.searchClearButton.isVisible = p0.toString().isNotEmpty()
                 }
             }
 
-        clearSearchButton.setOnClickListener {
+        binding.searchClearButton.setOnClickListener {
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(it.windowToken, 0)
-            editText.text?.clear()
-            clearSearchButton.isVisible = false
+            binding.editText.text?.clear()
+            binding.searchClearButton.isVisible = false
             songs.clear()
-            trackRecyclerView.adapter?.notifyDataSetChanged()
-            placeholder.isVisible = false
+            binding.trackRecyclerView.adapter?.notifyDataSetChanged()
+            binding.placeholder.isVisible = false
         }
 
-        editText.addTextChangedListener(textWatcher)
-        editText.setOnFocusChangeListener { _, hasFocus ->
-            history.isVisible = hasFocus && editText.text.isEmpty() && historyList.isNotEmpty()
-            trackRecyclerView.isVisible = !history.isVisible
+        binding.editText.addTextChangedListener(textWatcher)
+        binding.editText.setOnFocusChangeListener { _, hasFocus ->
+            binding.history.isVisible =
+                hasFocus && binding.editText.text!!.isEmpty() && historyList.isNotEmpty()
+            binding.trackRecyclerView.isVisible = !binding.history.isVisible
         }
 
-        errorFoundRefreshButton.setOnClickListener {
-            searchText?.let { searchSong(it) }
+        binding.errorFoundRefreshButton.setOnClickListener {
+            searchText?.let { searchViewModel.searchSong(it) }
         }
 
-        clearHistoryButton.setOnClickListener {
+        binding.clearHistoryButton.setOnClickListener {
             SharedPreferences.clearTrackHistory(this)
-            history.isVisible = false
+            binding.history.isVisible = false
         }
     }
 
@@ -172,34 +142,13 @@ class SearchActivity : AppCompatActivity() {
         listener?.let { SharedPreferences.unregisterChangeListener(this, it) }
     }
 
-    private fun searchSong(text: String) {
-        songInteractor.searchSong(
-            text,
-            object : SongInteractor.SongConsumer {
-                override fun onSuccess(foundSongs: List<Track>) {
-                    runOnUiThread {
-                        progressBar.isVisible = false
-                        songs.clear()
-                        if (foundSongs.isNotEmpty()) {
-                            trackRecyclerView.isVisible = true
-                            songs.addAll(foundSongs)
-                            trackRecyclerView.adapter?.notifyDataSetChanged()
-                        } else {
-                            trackRecyclerView.isVisible = false
-                            showNothingFoundPlaceholder()
-                        }
-                    }
-                }
+    private fun render(state: SearchScreenState) {
+        when (state) {
+            is SearchScreenState.Success -> showTracks(state.trackList)
+            is SearchScreenState.EmptyResult -> showNothingFoundPlaceholder()
+            is SearchScreenState.Error -> showErrorPlaceholder()
+        }
 
-                override fun onFailure(exception: Exception) {
-                    runOnUiThread {
-                        progressBar.isVisible = false
-                        trackRecyclerView.isVisible = false
-                        showErrorPlaceholder()
-                    }
-                }
-            },
-        )
     }
 
     private fun restoreTrackList(savedInstanceState: Bundle) {
@@ -214,18 +163,28 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun showTracks(tracks: List<Track>) {
+        binding.progressBar.isVisible = false
+        songs.clear()
+        binding.trackRecyclerView.isVisible = true
+        songs.addAll(tracks)
+        binding.trackRecyclerView.adapter?.notifyDataSetChanged()
+    }
+
     private fun showNothingFoundPlaceholder() {
-        placeholderImage.setImageResource(R.drawable.nothing_found_pic)
-        placeholderText.setText(R.string.nothing_found)
-        errorFoundRefreshButton.isVisible = false
-        placeholder.isVisible = true
+        binding.progressBar.isVisible = false
+        songs.clear()
+        binding.placeholderImage.setImageResource(R.drawable.nothing_found_pic)
+        binding.placeholderText.setText(R.string.nothing_found)
+        binding.errorFoundRefreshButton.isVisible = false
+        binding.placeholder.isVisible = true
     }
 
     private fun showErrorPlaceholder() {
-        placeholderImage.setImageResource(R.drawable.error_found_pic)
-        placeholderText.setText(R.string.error_found)
-        errorFoundRefreshButton.isVisible = true
-        placeholder.isVisible = true
+        binding.placeholderImage.setImageResource(R.drawable.error_found_pic)
+        binding.placeholderText.setText(R.string.error_found)
+        binding.errorFoundRefreshButton.isVisible = true
+        binding.placeholder.isVisible = true
     }
 
     private val clickListener =
@@ -247,7 +206,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchDebounce() {
         val searchRunnable =
-            Runnable { if (editText.text.isNotEmpty()) searchSong(editText.text.toString()) }
+            Runnable { if (binding.editText.text!!.isNotEmpty()) searchViewModel.searchSong(binding.editText.text.toString()) }
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }

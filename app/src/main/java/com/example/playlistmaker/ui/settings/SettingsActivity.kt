@@ -8,27 +8,27 @@ import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySettingsBinding
+    private var _binding: ActivitySettingsBinding? = null
+    private val binding get() = _binding!!
     private lateinit var settingsViewModel: SettingsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        _binding = ActivitySettingsBinding.inflate(layoutInflater)
         settingsViewModel =
             ViewModelProvider(
                 this,
                 SettingsViewModelFactory.getViewModelFactory(this, application),
             )[SettingsViewModel::class.java]
 
-        setContentView(R.layout.activity_settings)
+        setContentView(binding.root)
         setSupportActionBar(binding.settingsToolbar)
         binding.settingsToolbar.setNavigationOnClickListener {
             finish()
         }
-        val darkThemeSwitch = findViewById<SwitchMaterial>(R.id.dark_theme_switch)
-        darkThemeSwitch.isChecked = settingsViewModel.isDarkTheme
+        binding.darkThemeSwitch.isChecked = settingsViewModel.isDarkTheme
 
-        darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
+        binding.darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
             settingsViewModel.changeThemeMode(checked)
         }
 
@@ -43,5 +43,10 @@ class SettingsActivity : AppCompatActivity() {
         binding.eulaButton.setOnClickListener {
             settingsViewModel.startEulaIntent()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

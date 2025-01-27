@@ -1,9 +1,10 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.data.search.impl
 
 import android.util.Log
+import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.SongRequest
 import com.example.playlistmaker.data.dto.SongResponse
-import com.example.playlistmaker.domain.search.SongsRepository
+import com.example.playlistmaker.data.search.SongsRepository
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.utils.Utils
 
