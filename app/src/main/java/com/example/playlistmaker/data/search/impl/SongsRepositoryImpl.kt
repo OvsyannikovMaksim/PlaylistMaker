@@ -5,7 +5,7 @@ import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.SongRequest
 import com.example.playlistmaker.data.dto.SongResponse
 import com.example.playlistmaker.data.search.SongsRepository
-import com.example.playlistmaker.domain.search.model.Track
+import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.Utils
 
 class SongsRepositoryImpl(
