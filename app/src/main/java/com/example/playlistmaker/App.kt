@@ -2,7 +2,7 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.data.SharedPreferences
+import com.example.playlistmaker.main.data.SharedPreferences
 
 class App : Application() {
     override fun onCreate() {

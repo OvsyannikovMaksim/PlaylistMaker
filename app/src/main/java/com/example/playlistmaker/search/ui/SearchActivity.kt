@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.SharedPreferences
+import com.example.playlistmaker.main.data.SharedPreferences
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.audioplayer.ui.AudioPlayerActivity
