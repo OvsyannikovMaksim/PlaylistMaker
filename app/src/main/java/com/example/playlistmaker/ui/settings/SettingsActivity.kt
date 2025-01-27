@@ -1,11 +1,11 @@
 package com.example.playlistmaker.ui.settings
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
@@ -14,22 +14,21 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_settings)
-        setSupportActionBar(binding.settingsToolbar)
-        binding.settingsToolbar.setNavigationOnClickListener {
-            finish()
-        }
-
         settingsViewModel =
             ViewModelProvider(
                 this,
                 SettingsViewModelFactory.getViewModelFactory(this, application),
             )[SettingsViewModel::class.java]
 
-        binding.darkThemeSwitch.isChecked = settingsViewModel.isDarkTheme
+        setContentView(R.layout.activity_settings)
+        setSupportActionBar(binding.settingsToolbar)
+        binding.settingsToolbar.setNavigationOnClickListener {
+            finish()
+        }
+        val darkThemeSwitch = findViewById<SwitchMaterial>(R.id.dark_theme_switch)
+        darkThemeSwitch.isChecked = settingsViewModel.isDarkTheme
 
-        binding.darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
-            Log.d("TEST", "darkThemeSwitch")
+        darkThemeSwitch.setOnCheckedChangeListener { _, checked ->
             settingsViewModel.changeThemeMode(checked)
         }
 
