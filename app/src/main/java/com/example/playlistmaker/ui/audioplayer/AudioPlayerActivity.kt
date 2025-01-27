@@ -2,11 +2,8 @@ package com.example.playlistmaker.ui.audioplayer
 
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.view.isVisible
@@ -16,7 +13,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.utils.Utils
 import com.example.playlistmaker.utils.Utils.dpToPx
 
 class AudioPlayerActivity : AppCompatActivity() {
@@ -41,8 +37,12 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         viewModel.getPlayerState().observe(this) {
             playerState = it
+            binding.playButton.background = when (it) {
+                PlayerState.Paused, PlayerState.Default, PlayerState.Prepared, null -> getDrawable(this, R.drawable.play_button)
+                PlayerState.Playing -> getDrawable(this, R.drawable.pause_button)
+            }
         }
-        viewModel.getCurrentTrackTime().observe(this){
+        viewModel.getCurrentTrackTime().observe(this) {
             binding.currentTime.text = it
         }
 
