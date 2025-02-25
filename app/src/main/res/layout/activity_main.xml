@@ -25,9 +25,6 @@
         android:text="@string/search_button_text"
         style="@style/MainScreenButtonStyle"
         app:icon="@drawable/search_icon"
-        app:iconTint="@color/black"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/icon_padding_10"
         android:foreground="?attr/selectableItemBackground"/>
 
 
@@ -40,9 +37,6 @@
         android:text="@string/media_button_text"
         style="@style/MainScreenButtonStyle"
         app:icon="@drawable/library_icon"
-        app:iconTint="@color/black"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/icon_padding_10"
         android:foreground="?attr/selectableItemBackground"/>
 
     <com.google.android.material.button.MaterialButton
@@ -54,9 +48,6 @@
         android:text="@string/settings_button_text"
         style="@style/MainScreenButtonStyle"
         app:icon="@drawable/settings_icon"
-        app:iconTint="@color/black"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/icon_padding_10"
         android:foreground="?attr/selectableItemBackground"/>
 
 

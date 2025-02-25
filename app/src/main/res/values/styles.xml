@@ -9,6 +9,9 @@
         <item name="android:fontWeight">500</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.0</item>
+        <item name="iconTint">@color/black</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/icon_padding_10</item>
     </style>
 
     <style name="AppBarTextStyle">
@@ -22,6 +25,7 @@
         <item name="android:textSize">@dimen/text_size_16</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:fontWeight">400</item>
+        <item name="android:padding">@dimen/standard_margin</item>
     </style>
 
     <style name="MyEditTextStyle" parent="Theme.AppCompat.Light">

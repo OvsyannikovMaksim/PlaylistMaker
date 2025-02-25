@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:theme="@style/Theme.PlayListMaker.SettingsActivity">
 
@@ -21,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:padding="@dimen/standard_margin"
         android:text="@string/settings_theme_text"
         app:thumbTint="@drawable/thumb_tint"
         app:trackTint="@drawable/track_tint" />
@@ -32,7 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableEnd="@drawable/share_icon"
-        android:padding="@dimen/standard_margin"
         android:text="@string/settings_share_text" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -41,7 +38,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableEnd="@drawable/support_icon"
-        android:padding="@dimen/standard_margin"
         android:text="@string/settings_support_text" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -50,7 +46,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableEnd="@drawable/right_arrow_icon"
-        android:padding="@dimen/standard_margin"
         android:text="@string/settings_eula_text" />
 
 </LinearLayout>
