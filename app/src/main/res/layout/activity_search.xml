@@ -40,8 +40,7 @@
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/black"
-            android:textColorHint="@color/et_icon_color"
-            android:theme="@style/MyEditTextTheme" />
+            android:theme="@style/MyEditTextTheme"/>
 
         <ImageView
             android:id="@+id/search_clear_button"
@@ -51,7 +50,8 @@
             android:layout_marginEnd="10dp"
             android:padding="5dp"
             android:src="@drawable/et_clear"
-            android:visibility="gone" />
+            android:background="@color/et_background"
+            android:visibility="visible" />
     </FrameLayout>
 
     <LinearLayout
