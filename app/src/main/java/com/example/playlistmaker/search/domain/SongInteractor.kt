@@ -9,7 +9,7 @@ interface SongInteractor {
     )
 
     interface SongConsumer {
-        fun onSuccess(foundSongs: List<Track>)
+        fun onSuccess(foundSongs: ArrayList<Track>)
 
         fun onFailure(exception: Exception)
     }

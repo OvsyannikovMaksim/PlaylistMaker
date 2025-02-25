@@ -9,16 +9,20 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.playlistmaker.R
+import com.example.playlistmaker.audioplayer.domain.model.PlayerState
 import com.example.playlistmaker.utils.Utils
 
-class AudioPlayerViewModel(private val application: Application) : AndroidViewModel(application) {
-
+class AudioPlayerViewModel(
+    private val application: Application,
+) : AndroidViewModel(application) {
     private var mediaPlayer = MediaPlayer()
     private val handler = Handler(Looper.getMainLooper())
 
     private val playerState: MutableLiveData<PlayerState> = MutableLiveData(PlayerState.Default)
     private val currentTrackTime: MutableLiveData<String> = MutableLiveData()
+
     fun getPlayerState(): LiveData<PlayerState> = playerState
+
     fun getCurrentTrackTime(): LiveData<String> = currentTrackTime
 
     fun prepareMediaPlayer(url: String?) {
@@ -30,17 +34,17 @@ class AudioPlayerViewModel(private val application: Application) : AndroidViewMo
         mediaPlayer.setOnCompletionListener {
             playerState.postValue(PlayerState.Prepared)
             handler.removeCallbacks(updateTimer)
-            currentTrackTime.postValue(getString(application.applicationContext,R.string.default_current_time))
+            currentTrackTime.postValue(getString(application.applicationContext, R.string.default_current_time))
         }
     }
 
-    fun startPlayer(){
+    fun startPlayer()  {
         mediaPlayer.start()
         playerState.postValue(PlayerState.Playing)
         handler.post(updateTimer)
     }
 
-    fun pausePlayer(){
+    fun pausePlayer()  {
         mediaPlayer.pause()
         playerState.postValue(PlayerState.Paused)
         handler.removeCallbacks(updateTimer)

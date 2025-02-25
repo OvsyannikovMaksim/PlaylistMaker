@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.audioplayer.domain.model.PlayerState
 import com.example.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.Utils.dpToPx
@@ -37,10 +38,16 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         viewModel.getPlayerState().observe(this) {
             playerState = it
-            binding.playButton.background = when (it) {
-                PlayerState.Paused, PlayerState.Default, PlayerState.Prepared, null -> getDrawable(this, R.drawable.play_button)
-                PlayerState.Playing -> getDrawable(this, R.drawable.pause_button)
-            }
+            binding.playButton.background =
+                when (it) {
+                    PlayerState.Paused, PlayerState.Default, PlayerState.Prepared, null ->
+                        getDrawable(
+                            this,
+                            R.drawable.play_button,
+                        )
+
+                    PlayerState.Playing -> getDrawable(this, R.drawable.pause_button)
+                }
         }
         viewModel.getCurrentTrackTime().observe(this) {
             binding.currentTime.text = it
@@ -50,8 +57,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         prepareMediaPlayer()
         binding.playButton.setOnClickListener {
             when (playerState) {
-                PlayerState.Paused, PlayerState.Prepared -> toPlayingState()
-                PlayerState.Playing -> toPauseState()
+                PlayerState.Paused, PlayerState.Prepared -> viewModel.startPlayer()
+                PlayerState.Playing -> viewModel.pausePlayer()
                 PlayerState.Default -> null
             }
         }
@@ -59,22 +66,12 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        toPauseState()
+        viewModel.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.releasePlayer()
-    }
-
-    private fun toPauseState() {
-        viewModel.pausePlayer()
-        binding.playButton.background = getDrawable(this, R.drawable.play_button)
-    }
-
-    private fun toPlayingState() {
-        viewModel.startPlayer()
-        binding.playButton.background = getDrawable(this, R.drawable.pause_button)
     }
 
     private fun getTrack(intent: Intent): Track? =

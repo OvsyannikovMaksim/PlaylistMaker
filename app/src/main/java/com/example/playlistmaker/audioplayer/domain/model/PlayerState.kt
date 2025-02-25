@@ -1,4 +1,5 @@
-package com.example.playlistmaker.audioplayer.ui
+package com.example.playlistmaker.audioplayer.domain.model
+
 enum class PlayerState(
     val id: Int,
 ) {

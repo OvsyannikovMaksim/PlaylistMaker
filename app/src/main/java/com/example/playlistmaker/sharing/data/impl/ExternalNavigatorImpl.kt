@@ -10,7 +10,6 @@ import com.example.playlistmaker.sharing.domain.model.EmailData
 class ExternalNavigatorImpl(
     val context: Context,
 ) : ExternalNavigator {
-
     override fun openEmail(emailData: EmailData) {
         val intent =
             Intent(Intent.ACTION_SENDTO).apply {

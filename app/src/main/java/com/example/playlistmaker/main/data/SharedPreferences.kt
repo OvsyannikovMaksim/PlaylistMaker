@@ -8,8 +8,11 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 object SharedPreferences {
-    private fun getSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences(
-        MYSHAREDPREF, Context.MODE_PRIVATE)
+    private fun getSharedPreferences(context: Context): SharedPreferences =
+        context.getSharedPreferences(
+            MYSHAREDPREF,
+            Context.MODE_PRIVATE,
+        )
 
     private val gson = Gson()
 

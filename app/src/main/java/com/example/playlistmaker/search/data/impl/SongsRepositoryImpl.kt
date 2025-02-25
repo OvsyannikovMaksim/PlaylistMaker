@@ -1,19 +1,17 @@
 package com.example.playlistmaker.search.data.impl
 
-import android.util.Log
 import com.example.playlistmaker.search.data.NetworkClient
+import com.example.playlistmaker.search.data.SongsRepository
 import com.example.playlistmaker.search.data.dto.SongRequest
 import com.example.playlistmaker.search.data.dto.SongResponse
-import com.example.playlistmaker.search.data.SongsRepository
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.Utils
 
 class SongsRepositoryImpl(
     private val networkClient: NetworkClient,
 ) : SongsRepository {
-    override fun searchSong(expression: String): List<Track> {
+    override fun searchSong(expression: String): ArrayList<Track> {
         val response = networkClient.doRequest(SongRequest(expression))
-        Log.d("TEST", response.resultCode.toString())
         return if (response.resultCode == 200) {
             (response as SongResponse).results.map {
                 Track(
@@ -27,7 +25,7 @@ class SongsRepositoryImpl(
                     it.country,
                     it.previewUrl,
                 )
-            }
+            } as ArrayList<Track>
         } else {
             throw Exception("Request Error")
         }

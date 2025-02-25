@@ -11,8 +11,8 @@ object SettingsViewModelFactory {
     fun getViewModelFactory(
         context: Context,
         application: Application,
-    ): ViewModelProvider.Factory {
-        return viewModelFactory {
+    ): ViewModelProvider.Factory =
+        viewModelFactory {
             initializer {
                 SettingsViewModel(
                     Creator.getSharingInteractor(context),
@@ -20,5 +20,4 @@ object SettingsViewModelFactory {
                 )
             }
         }
-    }
 }
