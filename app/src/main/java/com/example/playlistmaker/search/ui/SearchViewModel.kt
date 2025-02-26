@@ -1,26 +1,25 @@
 package com.example.playlistmaker.search.ui
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.playlistmaker.main.data.SharedPreferences
+import androidx.lifecycle.ViewModel
+import com.example.playlistmaker.search.domain.HistoryInteractor
 import com.example.playlistmaker.search.domain.SongInteractor
 import com.example.playlistmaker.search.domain.model.SearchScreenState
 import com.example.playlistmaker.search.domain.model.Track
 
 class SearchViewModel(
     private val songInteractor: SongInteractor,
-    private val application: Application,
-) : AndroidViewModel(application) {
+    private val historyInteractor: HistoryInteractor
+) : ViewModel() {
     private val handler = Handler(Looper.getMainLooper())
     private val screenState: MutableLiveData<SearchScreenState> = MutableLiveData()
     fun getScreenState(): LiveData<SearchScreenState> = screenState
 
     init {
-        val history = SharedPreferences.getTrackHistory(application.applicationContext)
+        val history = historyInteractor.getTrackHistory()
         if (history.isEmpty()) {
             setState(SearchScreenState.Nothing)
         } else {
@@ -60,11 +59,11 @@ class SearchViewModel(
     }
 
     fun addHistory(track: Track) {
-        SharedPreferences.putTrackToHistory(application.applicationContext, track)
+        historyInteractor.putTrackToHistory(track)
     }
 
     fun clearHistory() {
-        SharedPreferences.clearTrackHistory(application.applicationContext)
+        historyInteractor.clearTrackHistory()
         screenState.postValue(SearchScreenState.Nothing)
     }
 

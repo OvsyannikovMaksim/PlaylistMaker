@@ -25,31 +25,11 @@ object SharedPreferences {
 
     fun getNightMode(context: Context): Boolean = getSharedPreferences(context).getBoolean(NIGTHMODE, false)
 
-    fun putTrackToHistory(
-        context: Context,
-        track: Track,
-    ) {
-        val trackList = getTrackHistory(context)
-        trackList.remove(track)
-        if (trackList.size < 10) {
-            trackList.add(0, track)
-        } else {
-            trackList.apply {
-                removeAt(trackList.size - 1)
-                add(0, track)
-            }
-        }
-        getSharedPreferences(context).edit().putString(TRACKHISTORY, gson.toJson(trackList)).apply()
-    }
 
     fun getTrackHistory(context: Context): ArrayList<Track> {
         val json = getSharedPreferences(context).getString(TRACKHISTORY, null)
         return json?.let { gson.fromJson(json, object : TypeToken<ArrayList<Track>>() {}.type) }
             ?: arrayListOf()
-    }
-
-    fun clearTrackHistory(context: Context) {
-        getSharedPreferences(context).edit().remove(TRACKHISTORY).apply()
     }
 
     fun registerChangeListener(

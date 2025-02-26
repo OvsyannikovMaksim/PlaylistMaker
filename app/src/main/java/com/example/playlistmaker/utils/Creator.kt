@@ -6,11 +6,15 @@ import com.example.playlistmaker.audioplayer.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.audioplayer.domain.MediaPlayerInteractor
 import com.example.playlistmaker.audioplayer.domain.MediaPlayerInteractorImpl
 import com.example.playlistmaker.audioplayer.domain.repository.MediaPlayerRepository
+import com.example.playlistmaker.search.data.impl.HistoryRepositoryImpl
 import com.example.playlistmaker.search.domain.repository.SongsRepository
 import com.example.playlistmaker.search.data.impl.SongsRepositoryImpl
 import com.example.playlistmaker.search.data.network.RetrofitITunes
+import com.example.playlistmaker.search.domain.HistoryInteractor
 import com.example.playlistmaker.search.domain.SongInteractor
+import com.example.playlistmaker.search.domain.impl.HistoryInteractorImpl
 import com.example.playlistmaker.search.domain.impl.SongInteractorImpl
+import com.example.playlistmaker.search.domain.repository.HistoryRepository
 import com.example.playlistmaker.settings.domain.repository.SettingsRepository
 import com.example.playlistmaker.settings.data.SettingsRepositoryImpl
 import com.example.playlistmaker.settings.domain.SettingsInteractor
@@ -44,4 +48,10 @@ object Creator {
 
     private fun getMediaPlayerRepository(): MediaPlayerRepository =
         MediaPlayerRepositoryImpl()
+
+    fun getHistoryInteractor(context: Context): HistoryInteractor =
+        HistoryInteractorImpl(getHistoryRepository(context))
+
+    private fun getHistoryRepository(context: Context): HistoryRepository=
+        HistoryRepositoryImpl(context)
 }
