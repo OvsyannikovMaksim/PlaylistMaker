@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.data.impl
 
 import com.example.playlistmaker.search.data.NetworkClient
-import com.example.playlistmaker.search.data.SongsRepository
+import com.example.playlistmaker.search.domain.repository.SongsRepository
 import com.example.playlistmaker.search.data.dto.SongRequest
 import com.example.playlistmaker.search.data.dto.SongResponse
 import com.example.playlistmaker.search.domain.model.Track

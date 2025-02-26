@@ -3,9 +3,9 @@ package com.example.playlistmaker.search.domain.model
 sealed class SearchScreenState {
     data object InProgress : SearchScreenState()
 
-    data object SuccessSearch : SearchScreenState()
+    data class SuccessSearch(val tracks: ArrayList<Track>) : SearchScreenState()
 
-    data object History : SearchScreenState()
+    data class History(val tracks: ArrayList<Track>) : SearchScreenState()
 
     data object EmptySearch : SearchScreenState()
 

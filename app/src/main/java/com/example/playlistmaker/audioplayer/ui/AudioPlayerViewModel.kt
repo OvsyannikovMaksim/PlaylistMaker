@@ -9,7 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.playlistmaker.R
-import com.example.playlistmaker.audioplayer.domain.model.PlayerState
+import com.example.playlistmaker.audioplayer.domain.model.ScreenState
 import com.example.playlistmaker.utils.Utils
 
 class AudioPlayerViewModel(
@@ -18,35 +18,34 @@ class AudioPlayerViewModel(
     private var mediaPlayer = MediaPlayer()
     private val handler = Handler(Looper.getMainLooper())
 
-    private val playerState: MutableLiveData<PlayerState> = MutableLiveData(PlayerState.Default)
-    private val currentTrackTime: MutableLiveData<String> = MutableLiveData()
+    private val playerState: MutableLiveData<ScreenState> =
+        MutableLiveData(ScreenState.getDefaultScreenState(application))
 
-    fun getPlayerState(): LiveData<PlayerState> = playerState
-
-    fun getCurrentTrackTime(): LiveData<String> = currentTrackTime
-
+    fun getPlayerState(): LiveData<ScreenState> = playerState
     fun prepareMediaPlayer(url: String?) {
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            playerState.postValue(PlayerState.Prepared)
+            playerState.postValue(ScreenState.getPreparedScreenState(application))
         }
         mediaPlayer.setOnCompletionListener {
-            playerState.postValue(PlayerState.Prepared)
+            playerState.postValue(ScreenState.getPreparedScreenState(application))
             handler.removeCallbacks(updateTimer)
-            currentTrackTime.postValue(getString(application.applicationContext, R.string.default_current_time))
         }
     }
 
-    fun startPlayer()  {
+    fun startPlayer() {
         mediaPlayer.start()
-        playerState.postValue(PlayerState.Playing)
         handler.post(updateTimer)
     }
 
-    fun pausePlayer()  {
+    fun pausePlayer() {
         mediaPlayer.pause()
-        playerState.postValue(PlayerState.Paused)
+        playerState.postValue(
+            ScreenState.getPausedScreenState(
+                playerState.value?.currentTime ?: getString(application.applicationContext, R.string.default_current_time)
+            )
+        )
         handler.removeCallbacks(updateTimer)
     }
 
@@ -58,7 +57,13 @@ class AudioPlayerViewModel(
     private val updateTimer =
         object : Runnable {
             override fun run() {
-                currentTrackTime.postValue(Utils.timeConverter(mediaPlayer.currentPosition.toLong()))
+                playerState.postValue(
+                    ScreenState.getPlayingScreenState(
+                        Utils.timeConverter(
+                            mediaPlayer.currentPosition.toLong()
+                        )
+                    )
+                )
                 handler.postDelayed(this, REFRESH_TIMER_DELAY_MILLIS)
             }
         }

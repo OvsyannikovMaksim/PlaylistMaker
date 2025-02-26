@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.audioplayer.domain.model.PlayerState
+import com.example.playlistmaker.audioplayer.domain.model.ScreenState
 import com.example.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.Utils.dpToPx
@@ -21,7 +22,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private val binding get() = _binding!!
     private val viewModel by lazy { ViewModelProvider(this)[AudioPlayerViewModel::class.java] }
 
-    private lateinit var playerState: PlayerState
+    private lateinit var screenState: ScreenState
     private var trackInfo: Track? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,29 +38,26 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         viewModel.getPlayerState().observe(this) {
-            playerState = it
+            screenState = it
             binding.playButton.background =
-                when (it) {
-                    PlayerState.Paused, PlayerState.Default, PlayerState.Prepared, null ->
+                when (it.playerState) {
+                    PlayerState.Paused, PlayerState.Default, PlayerState.Prepared ->
                         getDrawable(
                             this,
                             R.drawable.play_button,
                         )
-
                     PlayerState.Playing -> getDrawable(this, R.drawable.pause_button)
                 }
-        }
-        viewModel.getCurrentTrackTime().observe(this) {
-            binding.currentTime.text = it
+            binding.currentTime.text = it.currentTime
         }
 
         setTrack()
         prepareMediaPlayer()
         binding.playButton.setOnClickListener {
-            when (playerState) {
+            when (screenState.playerState) {
                 PlayerState.Paused, PlayerState.Prepared -> viewModel.startPlayer()
                 PlayerState.Playing -> viewModel.pausePlayer()
-                PlayerState.Default -> null
+                PlayerState.Default -> Unit
             }
         }
     }

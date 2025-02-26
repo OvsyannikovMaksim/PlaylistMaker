@@ -17,21 +17,14 @@ class SearchViewModel(
 ) : AndroidViewModel(application) {
     private val handler = Handler(Looper.getMainLooper())
     private val screenState: MutableLiveData<SearchScreenState> = MutableLiveData()
-    private val historyList: MutableLiveData<ArrayList<Track>> = MutableLiveData()
-    private val searchList: MutableLiveData<ArrayList<Track>> = MutableLiveData()
-
     fun getScreenState(): LiveData<SearchScreenState> = screenState
 
-    fun getHistoryList(): LiveData<ArrayList<Track>> = historyList
-
-    fun getSearchList(): LiveData<ArrayList<Track>> = searchList
-
     init {
-        historyList.value = SharedPreferences.getTrackHistory(application.applicationContext)
-        if (historyList.value.isNullOrEmpty()) {
+        val history = SharedPreferences.getTrackHistory(application.applicationContext)
+        if (history.isEmpty()) {
             setState(SearchScreenState.Nothing)
         } else {
-            setState(SearchScreenState.History)
+            setState(SearchScreenState.History(history))
         }
     }
 
@@ -53,8 +46,7 @@ class SearchViewModel(
             object : SongInteractor.SongConsumer {
                 override fun onSuccess(foundSongs: ArrayList<Track>) {
                     if (foundSongs.isNotEmpty()) {
-                        searchList.postValue(foundSongs)
-                        screenState.postValue(SearchScreenState.SuccessSearch)
+                        screenState.postValue(SearchScreenState.SuccessSearch(foundSongs))
                     } else {
                         screenState.postValue(SearchScreenState.EmptySearch)
                     }
@@ -69,12 +61,10 @@ class SearchViewModel(
 
     fun addHistory(track: Track) {
         SharedPreferences.putTrackToHistory(application.applicationContext, track)
-        historyList.postValue(SharedPreferences.getTrackHistory(application.applicationContext))
     }
 
     fun clearHistory() {
         SharedPreferences.clearTrackHistory(application.applicationContext)
-        historyList.postValue(arrayListOf())
         screenState.postValue(SearchScreenState.Nothing)
     }
 

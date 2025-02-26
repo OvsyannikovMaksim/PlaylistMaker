@@ -67,16 +67,6 @@ class SearchActivity : AppCompatActivity() {
             render(it)
         }
 
-        viewModel.getHistoryList().observe(this) {
-            historyList.clear()
-            historyList.addAll(it)
-        }
-
-        viewModel.getSearchList().observe(this) {
-            songs.clear()
-            songs.addAll(it)
-        }
-
         binding.searchClearButton.setOnClickListener {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(it.windowToken, 0)
@@ -93,7 +83,7 @@ class SearchActivity : AppCompatActivity() {
                     searchText?.let { viewModel.searchDebounce(it) }
                 }
                 if (binding.editText.hasFocus() && p0?.isEmpty() == true && historyList.isNotEmpty()) {
-                    viewModel.setState(SearchScreenState.History)
+                    viewModel.setState(SearchScreenState.History(SharedPreferences.getTrackHistory(application.applicationContext)))
                 } else {
                     viewModel.setState(SearchScreenState.Nothing)
                 }
@@ -137,10 +127,10 @@ class SearchActivity : AppCompatActivity() {
     private fun render(state: SearchScreenState) {
         when (state) {
             is SearchScreenState.InProgress -> showLoading()
-            is SearchScreenState.SuccessSearch -> showTracks()
+            is SearchScreenState.SuccessSearch -> showTracks(state.tracks)
             is SearchScreenState.EmptySearch -> showNothingFoundPlaceholder()
             is SearchScreenState.ErrorSearch -> showErrorPlaceholder()
-            is SearchScreenState.History -> showHistory()
+            is SearchScreenState.History -> showHistory(state.tracks)
             is SearchScreenState.Nothing -> {
                 hideHistory()
                 hideTracks()
@@ -157,20 +147,24 @@ class SearchActivity : AppCompatActivity() {
         hidePlaceholders()
     }
 
-    private fun showTracks() {
+    private fun showTracks(tracks: ArrayList<Track>) {
         binding.searchClearButton.isVisible = true
         binding.trackRv.isVisible = true
         binding.progressBar.isVisible = false
         binding.history.isVisible = false
         binding.placeholder.isVisible = false
+        songs.clear()
+        songs.addAll(tracks)
         binding.trackRv.adapter?.notifyDataSetChanged()
     }
 
-    private fun showHistory() {
+    private fun showHistory(tracks: ArrayList<Track>) {
         hideLoading()
         hidePlaceholders()
         hideTracks()
         binding.history.isVisible = true
+        historyList.clear()
+        historyList.addAll(tracks)
         binding.historyRv.adapter?.notifyDataSetChanged()
     }
 
