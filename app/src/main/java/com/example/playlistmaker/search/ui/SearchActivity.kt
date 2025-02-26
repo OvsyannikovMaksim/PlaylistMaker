@@ -75,14 +75,17 @@ class SearchActivity : AppCompatActivity() {
         binding.editText.addTextChangedListener(
             beforeTextChanged = { _: CharSequence?, _: Int, _: Int, _: Int -> },
             onTextChanged = { p0: CharSequence?, _: Int, _: Int, _: Int ->
-                if (!p0.isNullOrEmpty()) {
+                if (p0.isNullOrEmpty()) {
+                    viewModel.removeCallbacks()
+                    val history = viewModel.getHistory()
+                    if (binding.editText.hasFocus() && history.isNotEmpty()) {
+                        viewModel.setState(SearchScreenState.History(history))
+                    } else {
+                        viewModel.setState(SearchScreenState.Nothing)
+                    }
+                } else {
                     searchText = p0.toString()
                     searchText?.let { viewModel.searchDebounce(it) }
-                }
-                if (binding.editText.hasFocus() && p0?.isEmpty() == true && historyList.isNotEmpty()) {
-                    viewModel.setState(SearchScreenState.History(viewModel.getHistory()))
-                } else {
-                    viewModel.setState(SearchScreenState.Nothing)
                 }
             },
             afterTextChanged = { _: Editable? -> },

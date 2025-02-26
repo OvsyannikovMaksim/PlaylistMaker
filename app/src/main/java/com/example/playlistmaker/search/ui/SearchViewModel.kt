@@ -16,6 +16,8 @@ class SearchViewModel(
 ) : ViewModel() {
     private val handler = Handler(Looper.getMainLooper())
     private val screenState: MutableLiveData<SearchScreenState> = MutableLiveData()
+    private var searchText = ""
+    private val searchRunnable = Runnable { searchSong() }
     fun getScreenState(): LiveData<SearchScreenState> = screenState
 
     init {
@@ -32,16 +34,15 @@ class SearchViewModel(
     }
 
     fun searchDebounce(text: String) {
-        val searchRunnable =
-            Runnable { searchSong(text) }
+        searchText = text
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
-    private fun searchSong(text: String) {
+    private fun searchSong() {
         screenState.postValue(SearchScreenState.InProgress)
         songInteractor.searchSong(
-            text,
+            searchText,
             object : SongInteractor.SongConsumer {
                 override fun onSuccess(foundSongs: ArrayList<Track>) {
                     if (foundSongs.isNotEmpty()) {
@@ -69,6 +70,11 @@ class SearchViewModel(
 
     fun getHistory(): ArrayList<Track>{
         return historyInteractor.getTrackHistory()
+    }
+
+    fun removeCallbacks() {
+        searchText = ""
+        handler.removeCallbacks(searchRunnable)
     }
 
     companion object {
