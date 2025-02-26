@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.ui
 
-import android.app.Application
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
