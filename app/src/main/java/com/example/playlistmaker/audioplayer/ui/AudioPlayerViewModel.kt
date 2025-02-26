@@ -1,7 +1,6 @@
 package com.example.playlistmaker.audioplayer.ui
 
 import android.app.Application
-import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import androidx.core.content.ContextCompat.getString
@@ -11,7 +10,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.playlistmaker.R
 import com.example.playlistmaker.audioplayer.domain.MediaPlayerInteractor
 import com.example.playlistmaker.audioplayer.domain.model.ScreenState
-import com.example.playlistmaker.utils.Utils
 
 class AudioPlayerViewModel(
     private val application: Application,

@@ -20,7 +20,12 @@ import com.example.playlistmaker.utils.Utils.dpToPx
 class AudioPlayerActivity : AppCompatActivity() {
     private var _binding: ActivityAudioplayerBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by lazy { ViewModelProvider(this)[AudioPlayerViewModel::class.java] }
+    private val viewModel by lazy {
+        ViewModelProvider(
+            this,
+            AudioPlayerViewModelFactory.getViewModelFactory(application)
+        )[AudioPlayerViewModel::class.java]
+    }
 
     private lateinit var screenState: ScreenState
     private var trackInfo: Track? = null
@@ -46,6 +51,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                             this,
                             R.drawable.play_button,
                         )
+
                     PlayerState.Playing -> getDrawable(this, R.drawable.pause_button)
                 }
             binding.currentTime.text = it.currentTime
