@@ -19,7 +19,7 @@ class SearchViewModel(
     fun getScreenState(): LiveData<SearchScreenState> = screenState
 
     init {
-        val history = historyInteractor.getTrackHistory()
+        val history = getHistory()
         if (history.isEmpty()) {
             setState(SearchScreenState.Nothing)
         } else {
@@ -65,6 +65,10 @@ class SearchViewModel(
     fun clearHistory() {
         historyInteractor.clearTrackHistory()
         screenState.postValue(SearchScreenState.Nothing)
+    }
+
+    fun getHistory(): ArrayList<Track>{
+        return historyInteractor.getTrackHistory()
     }
 
     companion object {

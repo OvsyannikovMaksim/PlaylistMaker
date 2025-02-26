@@ -2,7 +2,6 @@ package com.example.playlistmaker.search.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -17,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.audioplayer.ui.AudioPlayerActivity
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.main.data.SharedPreferences
 import com.example.playlistmaker.search.domain.model.SearchScreenState
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.adapter.TrackListAdapter
@@ -36,7 +34,6 @@ class SearchActivity : AppCompatActivity() {
 
     private var songs = arrayListOf<Track>()
     private var historyList = arrayListOf<Track>()
-    private var listener: OnSharedPreferenceChangeListener? = null
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
 
@@ -83,7 +80,7 @@ class SearchActivity : AppCompatActivity() {
                     searchText?.let { viewModel.searchDebounce(it) }
                 }
                 if (binding.editText.hasFocus() && p0?.isEmpty() == true && historyList.isNotEmpty()) {
-                    viewModel.setState(SearchScreenState.History(SharedPreferences.getTrackHistory(application.applicationContext)))
+                    viewModel.setState(SearchScreenState.History(viewModel.getHistory()))
                 } else {
                     viewModel.setState(SearchScreenState.Nothing)
                 }
@@ -105,11 +102,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchText = savedInstanceState.getString(EDIT_TEXT_TAG)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        listener?.let { SharedPreferences.unregisterChangeListener(this, it) }
     }
 
     private fun restoreTrackList(savedInstanceState: Bundle) {

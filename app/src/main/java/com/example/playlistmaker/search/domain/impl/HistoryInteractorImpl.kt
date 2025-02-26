@@ -4,17 +4,17 @@ import com.example.playlistmaker.search.domain.HistoryInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.repository.HistoryRepository
 
-class HistoryInteractorImpl(historyRepository: HistoryRepository): HistoryInteractor {
+class HistoryInteractorImpl(private val historyRepository: HistoryRepository) : HistoryInteractor {
 
     override fun getTrackHistory(): ArrayList<Track> {
-        TODO("Not yet implemented")
+        return historyRepository.getTrackHistory()
     }
 
     override fun putTrackToHistory(track: Track) {
-        TODO("Not yet implemented")
+        historyRepository.putTrackToHistory(track)
     }
 
     override fun clearTrackHistory() {
-        TODO("Not yet implemented")
+        historyRepository.clearTrackHistory()
     }
 }

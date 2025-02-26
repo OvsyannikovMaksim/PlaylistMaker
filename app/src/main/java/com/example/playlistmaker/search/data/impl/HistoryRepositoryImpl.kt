@@ -36,7 +36,8 @@ class HistoryRepositoryImpl(val context: Context) : HistoryRepository {
                 add(0, track)
             }
         }
-        getSharedPreferences(context).edit().putString(TRACK_HISTORY, gson.toJson(trackList)).apply()
+        getSharedPreferences(context).edit().putString(TRACK_HISTORY, gson.toJson(trackList))
+            .apply()
     }
 
     override fun clearTrackHistory() {
@@ -44,7 +45,7 @@ class HistoryRepositoryImpl(val context: Context) : HistoryRepository {
             .edit().remove(TRACK_HISTORY).apply()
     }
 
-    companion object{
+    companion object {
         const val HISTORY_SHARED_PREF = "HISTORY_SHARED_PREF"
         private const val TRACK_HISTORY = "TRACKHISTORY"
     }
