@@ -2,6 +2,10 @@ package com.example.playlistmaker.utils
 
 import android.app.Application
 import android.content.Context
+import com.example.playlistmaker.audioplayer.data.MediaPlayerRepositoryImpl
+import com.example.playlistmaker.audioplayer.domain.MediaPlayerInteractor
+import com.example.playlistmaker.audioplayer.domain.MediaPlayerInteractorImpl
+import com.example.playlistmaker.audioplayer.domain.repository.MediaPlayerRepository
 import com.example.playlistmaker.search.domain.repository.SongsRepository
 import com.example.playlistmaker.search.data.impl.SongsRepositoryImpl
 import com.example.playlistmaker.search.data.network.RetrofitITunes
@@ -34,4 +38,10 @@ object Creator {
         context: Context,
         application: Application,
     ): SettingsInteractor = SettingsInteractorImpl(getSettingsRepository(context, application))
+
+    fun getMediaPlayerInteractor(): MediaPlayerInteractor =
+        MediaPlayerInteractorImpl(getMediaPlayerRepository())
+
+    private fun getMediaPlayerRepository(): MediaPlayerRepository =
+        MediaPlayerRepositoryImpl()
 }
