@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.playlistmaker.R
 import com.example.playlistmaker.audioplayer.domain.MediaPlayerInteractor
+import com.example.playlistmaker.audioplayer.domain.model.PlayerState
 import com.example.playlistmaker.audioplayer.domain.model.ScreenState
 
 class AudioPlayerViewModel(
@@ -18,14 +19,40 @@ class AudioPlayerViewModel(
     private val handler = Handler(Looper.getMainLooper())
 
     private val playerState: MutableLiveData<ScreenState> =
-        MutableLiveData(ScreenState.getDefaultScreenState(application))
+        MutableLiveData(
+            ScreenState(
+                PlayerState.Default,
+                getString(
+                    application.applicationContext,
+                    R.string.default_current_time
+                )
+            )
+        )
 
     fun getPlayerState(): LiveData<ScreenState> = playerState
     fun prepareMediaPlayer(url: String?) {
         mediaPlayerInteractor.preparePlayer(url,
-            { playerState.postValue(ScreenState.getPreparedScreenState(application)) },
             {
-                playerState.postValue(ScreenState.getPreparedScreenState(application))
+                playerState.postValue(
+                    ScreenState(
+                        PlayerState.Prepared,
+                        getString(
+                            application.applicationContext,
+                            R.string.default_current_time
+                        )
+                    )
+                )
+            },
+            {
+                playerState.postValue(
+                    ScreenState(
+                        PlayerState.Prepared,
+                        getString(
+                            application.applicationContext,
+                            R.string.default_current_time
+                        )
+                    )
+                )
                 handler.removeCallbacks(updateTimer)
             })
     }
@@ -38,8 +65,8 @@ class AudioPlayerViewModel(
     fun pausePlayer() {
         mediaPlayerInteractor.pausePlayer()
         playerState.postValue(
-            ScreenState.getPausedScreenState(
-                playerState.value?.currentTime ?: getString(
+            ScreenState(
+                PlayerState.Paused, playerState.value?.currentTime ?: getString(
                     application.applicationContext,
                     R.string.default_current_time
                 )
@@ -57,9 +84,7 @@ class AudioPlayerViewModel(
         object : Runnable {
             override fun run() {
                 playerState.postValue(
-                    ScreenState.getPlayingScreenState(
-                         mediaPlayerInteractor.getCurrentTime()
-                    )
+                    ScreenState(PlayerState.Playing, mediaPlayerInteractor.getCurrentTime())
                 )
                 handler.postDelayed(this, REFRESH_TIMER_DELAY_MILLIS)
             }
