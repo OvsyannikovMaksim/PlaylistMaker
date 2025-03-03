@@ -4,9 +4,8 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.audioplayer.domain.repository.MediaPlayerRepository
 import com.example.playlistmaker.utils.Utils
 
-class MediaPlayerRepositoryImpl() : MediaPlayerRepository {
+class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPlayerRepository {
 
-    private var mediaPlayer = MediaPlayer()
     override fun preparePlayer(
         url: String?,
         onPreparedListener: () -> Unit,

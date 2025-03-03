@@ -2,6 +2,7 @@ package com.example.playlistmaker.sharing.data.impl
 
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import com.example.playlistmaker.R
 import com.example.playlistmaker.sharing.data.ExternalNavigator
@@ -17,6 +18,7 @@ class ExternalNavigatorImpl(
                 putExtra(Intent.EXTRA_EMAIL, emailData.email)
                 putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
                 putExtra(Intent.EXTRA_TEXT, emailData.body)
+                addFlags(FLAG_ACTIVITY_NEW_TASK)
             }
         context.startActivity(intent)
     }
@@ -25,6 +27,7 @@ class ExternalNavigatorImpl(
         val intent =
             Intent(Intent.ACTION_VIEW).apply {
                 data = Uri.parse(string)
+                addFlags(FLAG_ACTIVITY_NEW_TASK)
             }
         context.startActivity(intent)
     }
@@ -35,6 +38,7 @@ class ExternalNavigatorImpl(
                 putExtra(Intent.EXTRA_TEXT, string)
                 type = "text/plain"
             }
-        context.startActivity(Intent.createChooser(intent, context.getString(R.string.chooser_text)))
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.chooser_text)).addFlags(
+            FLAG_ACTIVITY_NEW_TASK))
     }
 }
