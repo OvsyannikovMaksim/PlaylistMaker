@@ -7,7 +7,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -16,16 +15,12 @@ import com.example.playlistmaker.audioplayer.domain.model.ScreenState
 import com.example.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.Utils.dpToPx
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPlayerActivity : AppCompatActivity() {
     private var _binding: ActivityAudioplayerBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this,
-            AudioPlayerViewModelFactory.getViewModelFactory(application)
-        )[AudioPlayerViewModel::class.java]
-    }
+    private val viewModel by viewModel<AudioPlayerViewModel>()
 
     private lateinit var screenState: ScreenState
     private var trackInfo: Track? = null
