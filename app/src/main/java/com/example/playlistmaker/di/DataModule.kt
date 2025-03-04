@@ -1,9 +1,10 @@
 package com.example.playlistmaker.di
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import com.example.playlistmaker.audioplayer.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.audioplayer.domain.repository.MediaPlayerRepository
-import com.example.playlistmaker.main.data.SharedPreferences
 import com.example.playlistmaker.search.data.NetworkClient
 import com.example.playlistmaker.search.data.impl.HistoryRepositoryImpl
 import com.example.playlistmaker.search.data.impl.SongsRepositoryImpl
@@ -23,6 +24,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 private const val BASE_URL = "https://itunes.apple.com"
+private const val MYSHAREDPREF = "PLAY_LIST_SHARED_PREF"
 
 val dataModule = module {
 
@@ -31,7 +33,7 @@ val dataModule = module {
     }
 
     factory<HistoryRepository> {
-        HistoryRepositoryImpl(androidContext(), get())
+        HistoryRepositoryImpl(get(), get())
     }
 
     factory<SongsRepository> {
@@ -55,8 +57,11 @@ val dataModule = module {
             .create(ITunesApi::class.java)
     }
 
-    single {
-        SharedPreferences(androidContext())
+    single<SharedPreferences> {
+        androidContext().getSharedPreferences(
+            MYSHAREDPREF,
+            Context.MODE_PRIVATE,
+        )
     }
 
     factory<NetworkClient> {

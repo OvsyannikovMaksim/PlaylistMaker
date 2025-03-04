@@ -6,14 +6,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.domainModule
 import com.example.playlistmaker.di.viewModelModule
-import com.example.playlistmaker.main.data.SharedPreferences
+import com.example.playlistmaker.settings.domain.SettingsInteractor
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class App : Application() {
 
-    private val sharedPreferences: SharedPreferences by inject()
+    private val settingsInteractor: SettingsInteractor by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -22,21 +22,20 @@ class App : Application() {
             modules(dataModule, domainModule, viewModelModule)
         }
 
-        if (sharedPreferences.isFirstRun()) {
-            sharedPreferences.putIsFirstRun(false)
+        if (settingsInteractor.getIsFirstRun()) {
+            settingsInteractor.putFirstRun(false)
             val currentNightMode =
                 resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
             when (currentNightMode) {
                 Configuration.UI_MODE_NIGHT_YES -> {
-                    sharedPreferences.putNightMode( true)
+                    settingsInteractor.updateThemeSetting(true)
                 }
-
                 Configuration.UI_MODE_NIGHT_NO -> {
-                    sharedPreferences.putNightMode( false)
+                    settingsInteractor.updateThemeSetting( false)
                 }
             }
         }
-        switchTheme(sharedPreferences.getNightMode())
+        switchTheme(settingsInteractor.getThemeSettings())
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {

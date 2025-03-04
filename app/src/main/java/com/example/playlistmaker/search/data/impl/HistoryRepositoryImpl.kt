@@ -7,16 +7,13 @@ import com.example.playlistmaker.search.domain.repository.HistoryRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class HistoryRepositoryImpl(val context: Context, private val gson: Gson) : HistoryRepository {
-
-    private fun getSharedPreferences(context: Context): SharedPreferences =
-        context.getSharedPreferences(
-            HISTORY_SHARED_PREF,
-            Context.MODE_PRIVATE,
-        )
+class HistoryRepositoryImpl(
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson
+) : HistoryRepository {
 
     override fun getTrackHistory(): ArrayList<Track> {
-        val json = getSharedPreferences(context).getString(TRACK_HISTORY, null)
+        val json = sharedPreferences.getString(TRACK_HISTORY, null)
         return json?.let { gson.fromJson(json, object : TypeToken<ArrayList<Track>>() {}.type) }
             ?: arrayListOf()
     }
@@ -34,13 +31,12 @@ class HistoryRepositoryImpl(val context: Context, private val gson: Gson) : Hist
                 add(0, track)
             }
         }
-        getSharedPreferences(context).edit().putString(TRACK_HISTORY, gson.toJson(trackList))
+        sharedPreferences.edit().putString(TRACK_HISTORY, gson.toJson(trackList))
             .apply()
     }
 
     override fun clearTrackHistory() {
-        getSharedPreferences(context)
-            .edit().remove(TRACK_HISTORY).apply()
+        sharedPreferences.edit().remove(TRACK_HISTORY).apply()
     }
 
     companion object {
