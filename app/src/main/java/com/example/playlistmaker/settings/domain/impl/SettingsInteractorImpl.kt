@@ -11,4 +11,12 @@ class SettingsInteractorImpl(
     override fun updateThemeSetting(isDarkTheme: Boolean) {
         settingsRepository.updateThemeSetting(isDarkTheme)
     }
+
+    override fun getIsFirstRun(): Boolean {
+        return settingsRepository.getIsFirstRun()
+    }
+
+    override fun putFirstRun(isFirstRun: Boolean) {
+        settingsRepository.putFirstRun(isFirstRun)
+    }
 }

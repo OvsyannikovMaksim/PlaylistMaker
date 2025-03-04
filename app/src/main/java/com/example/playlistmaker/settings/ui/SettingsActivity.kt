@@ -2,22 +2,17 @@ package com.example.playlistmaker.settings.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
     private var _binding: ActivitySettingsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var settingsViewModel: SettingsViewModel
+    private val settingsViewModel by viewModel<SettingsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivitySettingsBinding.inflate(layoutInflater)
-        settingsViewModel =
-            ViewModelProvider(
-                this,
-                SettingsViewModelFactory.getViewModelFactory(this, application),
-            )[SettingsViewModel::class.java]
 
         setContentView(binding.root)
         setSupportActionBar(binding.settingsToolbar)

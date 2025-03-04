@@ -2,29 +2,40 @@ package com.example.playlistmaker
 
 import android.app.Application
 import android.content.res.Configuration
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.main.data.SharedPreferences
+import com.example.playlistmaker.di.dataModule
+import com.example.playlistmaker.di.domainModule
+import com.example.playlistmaker.di.viewModelModule
+import com.example.playlistmaker.settings.domain.SettingsInteractor
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class App : Application() {
 
+    private val settingsInteractor: SettingsInteractor by inject()
+
     override fun onCreate() {
         super.onCreate()
-        if (SharedPreferences.isFirstRun(this)) {
-            SharedPreferences.putIsFirstRun(this, false)
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, domainModule, viewModelModule)
+        }
+
+        if (settingsInteractor.getIsFirstRun()) {
+            settingsInteractor.putFirstRun(false)
             val currentNightMode =
                 resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
             when (currentNightMode) {
                 Configuration.UI_MODE_NIGHT_YES -> {
-                    SharedPreferences.putNightMode(this, true)
+                    settingsInteractor.updateThemeSetting(true)
                 }
-
                 Configuration.UI_MODE_NIGHT_NO -> {
-                    SharedPreferences.putNightMode(this, false)
+                    settingsInteractor.updateThemeSetting( false)
                 }
             }
         }
-        switchTheme(SharedPreferences.getNightMode(this))
+        switchTheme(settingsInteractor.getThemeSettings())
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
