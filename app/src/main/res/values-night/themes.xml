@@ -19,6 +19,10 @@
         <item name="android:background">@color/yp_black</item>
     </style>
 
+    <style name="Theme.PlayListMaker.MediaActivity" parent="Base.Theme.PlayListMaker">
+        <item name="android:colorBackground">@color/yp_black</item>
+    </style>
+
     <style name="Theme.PlayListMaker.AudioPlayerActivity" parent="Base.Theme.PlayListMaker">
         <item name="android:background">@color/yp_black</item>
     </style>
