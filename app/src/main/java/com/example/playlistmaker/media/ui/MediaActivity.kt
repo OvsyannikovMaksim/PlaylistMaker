@@ -18,12 +18,17 @@ class MediaActivity : AppCompatActivity() {
         _binding = ActivityMediaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.mediaToolbar)
+        binding.mediaToolbar.setNavigationOnClickListener {
+            finish()
+        }
+
         binding.viewPager.adapter = MediaPlayerViewPagerAdapter(supportFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when(position){
                 0-> tab.text = getString(R.string.fav_tracks_tab)
-                else -> tab.text = getString(R.string.platlist_tab)
+                else -> tab.text = getString(R.string.playlist_tab)
             }
         }
         tabMediator?.attach()

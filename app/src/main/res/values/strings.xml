@@ -23,5 +23,9 @@
     <string name="duration_title">Duration</string>
     <string name="default_current_time">00:00</string>
     <string name="fav_tracks_tab">Favourite tracks</string>
-    <string name="platlist_tab">Playlists</string>
+    <string name="playlist_tab">Playlists</string>
+    <string name="media_title">Media Library</string>
+    <string name="empty_fav">Your media is empty</string>
+    <string name="empty_playlist">You don\'t create\n any playlists</string>
+    <string name="create_playlist_button">New playlist</string>
 </resources>
