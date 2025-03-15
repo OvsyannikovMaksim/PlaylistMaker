@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
@@ -49,7 +50,8 @@ class AudioPlayerActivity : AppCompatActivity() {
 
                     PlayerState.Playing -> getDrawable(this, R.drawable.pause_button)
                 }
-            binding.currentTime.text = it.currentTime
+            binding.currentTime.text = it.currentTime ?: applicationContext.getString(R.string.default_current_time)
+
         }
 
         setTrack()

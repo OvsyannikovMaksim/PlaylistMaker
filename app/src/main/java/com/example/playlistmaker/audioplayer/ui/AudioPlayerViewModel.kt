@@ -1,31 +1,24 @@
 package com.example.playlistmaker.audioplayer.ui
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import androidx.core.content.ContextCompat.getString
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.playlistmaker.R
+import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.audioplayer.domain.MediaPlayerInteractor
 import com.example.playlistmaker.audioplayer.domain.model.PlayerState
 import com.example.playlistmaker.audioplayer.domain.model.ScreenState
 
 class AudioPlayerViewModel(
-    private val application: Application,
     private val mediaPlayerInteractor: MediaPlayerInteractor
-) : AndroidViewModel(application) {
+) : ViewModel() {
     private val handler = Handler(Looper.getMainLooper())
 
     private val playerState: MutableLiveData<ScreenState> =
         MutableLiveData(
             ScreenState(
                 PlayerState.Default,
-                getString(
-                    application.applicationContext,
-                    R.string.default_current_time
-                )
+                null
             )
         )
 
@@ -36,10 +29,7 @@ class AudioPlayerViewModel(
                 playerState.postValue(
                     ScreenState(
                         PlayerState.Prepared,
-                        getString(
-                            application.applicationContext,
-                            R.string.default_current_time
-                        )
+                        null
                     )
                 )
             },
@@ -47,10 +37,7 @@ class AudioPlayerViewModel(
                 playerState.postValue(
                     ScreenState(
                         PlayerState.Prepared,
-                        getString(
-                            application.applicationContext,
-                            R.string.default_current_time
-                        )
+                        null
                     )
                 )
                 handler.removeCallbacks(updateTimer)
@@ -66,10 +53,7 @@ class AudioPlayerViewModel(
         mediaPlayerInteractor.pausePlayer()
         playerState.postValue(
             ScreenState(
-                PlayerState.Paused, playerState.value?.currentTime ?: getString(
-                    application.applicationContext,
-                    R.string.default_current_time
-                )
+                PlayerState.Paused, playerState.value?.currentTime
             )
         )
         handler.removeCallbacks(updateTimer)
