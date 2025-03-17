@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +44,6 @@ class SearchFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d("TEST", "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
         savedInstanceState?.let {
             searchText = it.getString(EDIT_TEXT_TAG)
@@ -78,6 +76,7 @@ class SearchFragment : Fragment() {
             onTextChanged = { p0: CharSequence?, _: Int, _: Int, _: Int ->
                 if (p0.isNullOrEmpty()) {
                     viewModel.removeCallbacks()
+                    binding.searchClearButton.isVisible = true
                     val history = viewModel.getHistory()
                     if (binding.editText.hasFocus() && history.isNotEmpty()) {
                         viewModel.setState(SearchScreenState.History(history))
@@ -85,6 +84,7 @@ class SearchFragment : Fragment() {
                         viewModel.setState(SearchScreenState.Nothing)
                     }
                 } else {
+                    binding.searchClearButton.isVisible = false
                     searchText = p0.toString()
                     searchText?.let { viewModel.searchDebounce(it) }
                 }
@@ -96,8 +96,8 @@ class SearchFragment : Fragment() {
         binding.historyRv.adapter = TrackListAdapter(historyList, clickListener)
         searchText?.let { binding.editText.setText(it) }
         binding.editText.setOnFocusChangeListener { _, hasFocus ->
-            if(hasFocus) {
-                val history = viewModel.getHistory()
+            val history = viewModel.getHistory()
+            if(hasFocus && history.isNotEmpty()) {
                 viewModel.setState(SearchScreenState.History(history))
             } else {
                 viewModel.setState(SearchScreenState.Nothing)
@@ -139,7 +139,6 @@ class SearchFragment : Fragment() {
     }
 
     private fun showTracks(tracks: ArrayList<Track>) {
-        binding.searchClearButton.isVisible = true
         binding.trackRv.isVisible = true
         binding.progressBar.isVisible = false
         binding.history.isVisible = false
@@ -160,7 +159,6 @@ class SearchFragment : Fragment() {
     }
 
     private fun showNothingFoundPlaceholder() {
-        binding.searchClearButton.isVisible = true
         hideLoading()
         binding.placeholderImage.setImageResource(R.drawable.nothing_found_pic)
         binding.placeholderText.setText(R.string.nothing_found)
@@ -169,7 +167,6 @@ class SearchFragment : Fragment() {
     }
 
     private fun showErrorPlaceholder() {
-        binding.searchClearButton.isVisible = true
         hideLoading()
         binding.placeholderImage.setImageResource(R.drawable.error_found_pic)
         binding.placeholderText.setText(R.string.error_found)
