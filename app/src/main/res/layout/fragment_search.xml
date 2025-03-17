@@ -50,7 +50,7 @@
             android:padding="5dp"
             android:src="@drawable/et_clear"
             android:background="@color/et_background"
-            android:visibility="visible" />
+            android:visibility="gone" />
     </FrameLayout>
 
     <LinearLayout

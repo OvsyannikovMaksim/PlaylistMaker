@@ -184,7 +184,6 @@ class SearchFragment : Fragment() {
 
     private fun hideTracks() {
         binding.trackRv.isVisible = false
-        binding.searchClearButton.isVisible = false
     }
 
     private fun hidePlaceholders() {
