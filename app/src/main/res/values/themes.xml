@@ -20,8 +20,12 @@
         <item name="android:background">@color/white</item>
     </style>
 
-    <style name="Theme.PlayListMaker.AudioPlayerActivity" parent="Base.Theme.PlayListMaker">
+    <style name="Theme.PlayListMaker.AudioPlayerActivity" parent="Theme.PlayListMaker">
         <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="Theme.PlayListMaker.MediaActivity" parent="Theme.PlayListMaker">
+        <item name="android:colorBackground">@color/white</item>
     </style>
 
     <style name="MyEditTextTheme" parent="Theme.AppCompat.Light">
