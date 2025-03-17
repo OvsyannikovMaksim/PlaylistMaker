@@ -76,7 +76,7 @@ class SearchFragment : Fragment() {
             onTextChanged = { p0: CharSequence?, _: Int, _: Int, _: Int ->
                 if (p0.isNullOrEmpty()) {
                     viewModel.removeCallbacks()
-                    binding.searchClearButton.isVisible = true
+                    binding.searchClearButton.isVisible = false
                     val history = viewModel.getHistory()
                     if (binding.editText.hasFocus() && history.isNotEmpty()) {
                         viewModel.setState(SearchScreenState.History(history))
@@ -84,7 +84,7 @@ class SearchFragment : Fragment() {
                         viewModel.setState(SearchScreenState.Nothing)
                     }
                 } else {
-                    binding.searchClearButton.isVisible = false
+                    binding.searchClearButton.isVisible = true
                     searchText = p0.toString()
                     searchText?.let { viewModel.searchDebounce(it) }
                 }
