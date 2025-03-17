@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/back_button"
         app:title="@string/search_title"
         app:titleTextAppearance="@style/AppBarTextStyle" />
 

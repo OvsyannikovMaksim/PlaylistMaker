@@ -6,7 +6,7 @@
     <style name="Theme.PlayListMaker" parent="Base.Theme.PlayListMaker" />
 
     <style name="Theme.PlayListMaker.MainActivity" parent="Base.Theme.PlayListMaker">
-        <item name="android:background">@color/black</item>
+        <item name="android:background">@color/yp_black</item>
     </style>
 
     <style name="Theme.PlayListMaker.SettingsActivity" parent="Base.Theme.PlayListMaker">
@@ -20,7 +20,7 @@
     </style>
 
     <style name="Theme.PlayListMaker.MediaActivity" parent="Base.Theme.PlayListMaker">
-        <item name="android:colorBackground">@color/yp_black</item>
+        <item name="android:background">@color/yp_black</item>
     </style>
 
     <style name="Theme.PlayListMaker.AudioPlayerActivity" parent="Base.Theme.PlayListMaker">

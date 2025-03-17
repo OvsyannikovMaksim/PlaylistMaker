@@ -41,6 +41,8 @@ android {
 dependencies {
 
     implementation(libs.glide)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
     annotationProcessor(libs.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

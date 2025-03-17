@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    tools:context=".settings.ui.SettingsFragment"
     android:theme="@style/Theme.PlayListMaker.SettingsActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/settings_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:navigationIcon="@drawable/back_button"
         app:title="@string/settings_title"
         app:titleTextAppearance="@style/AppBarTextStyle" />
 

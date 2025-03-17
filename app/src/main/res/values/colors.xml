@@ -17,4 +17,5 @@
     <color name="inverted_background">@color/black</color>
     <color name="audioplayer_button">@color/yp_black</color>
     <color name="audioplayer_text_info_title">@color/yp_grey</color>
+    <color name="bottom_bar">@color/white</color>
 </resources>
