@@ -21,12 +21,7 @@ class SearchViewModel(
     fun getScreenState(): LiveData<SearchScreenState> = screenState
 
     init {
-        val history = getHistory()
-        if (history.isEmpty()) {
-            setState(SearchScreenState.Nothing)
-        } else {
-            setState(SearchScreenState.History(history))
-        }
+        setState(SearchScreenState.Nothing)
     }
 
     fun setState(state: SearchScreenState) {

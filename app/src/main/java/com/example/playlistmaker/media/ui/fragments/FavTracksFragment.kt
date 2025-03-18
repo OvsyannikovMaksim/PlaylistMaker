@@ -5,11 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.databinding.FragmentFavTracksBinding
 import com.example.playlistmaker.media.ui.view_model.FavTracksViewModel
-import com.example.playlistmaker.search.ui.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavTracksFragment: Fragment() {
