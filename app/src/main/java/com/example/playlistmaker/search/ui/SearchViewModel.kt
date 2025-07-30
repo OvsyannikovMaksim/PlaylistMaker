@@ -1,23 +1,24 @@
 package com.example.playlistmaker.search.ui
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.HistoryInteractor
 import com.example.playlistmaker.search.domain.SongInteractor
 import com.example.playlistmaker.search.domain.model.SearchScreenState
 import com.example.playlistmaker.search.domain.model.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val songInteractor: SongInteractor,
     private val historyInteractor: HistoryInteractor
 ) : ViewModel() {
-    private val handler = Handler(Looper.getMainLooper())
     private val screenState: MutableLiveData<SearchScreenState> = MutableLiveData()
     private var searchText = ""
-    private val searchRunnable = Runnable { searchSong() }
+    private var searchJob: Job? = null
     fun getScreenState(): LiveData<SearchScreenState> = screenState
 
     init {
@@ -29,9 +30,15 @@ class SearchViewModel(
     }
 
     fun searchDebounce(text: String) {
+        if (text == searchText) return
+
         searchText = text
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchSong()
+        }
     }
 
     private fun searchSong() {
@@ -63,13 +70,8 @@ class SearchViewModel(
         screenState.postValue(SearchScreenState.Nothing)
     }
 
-    fun getHistory(): ArrayList<Track>{
+    fun getHistory(): ArrayList<Track> {
         return historyInteractor.getTrackHistory()
-    }
-
-    fun removeCallbacks() {
-        searchText = ""
-        handler.removeCallbacks(searchRunnable)
     }
 
     companion object {
