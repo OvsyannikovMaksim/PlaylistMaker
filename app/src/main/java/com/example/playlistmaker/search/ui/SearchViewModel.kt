@@ -10,6 +10,7 @@ import com.example.playlistmaker.search.domain.model.SearchScreenState
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -43,22 +44,18 @@ class SearchViewModel(
 
     private fun searchSong() {
         screenState.postValue(SearchScreenState.InProgress)
-        songInteractor.searchSong(
-            searchText,
-            object : SongInteractor.SongConsumer {
-                override fun onSuccess(foundSongs: ArrayList<Track>) {
-                    if (foundSongs.isNotEmpty()) {
-                        screenState.postValue(SearchScreenState.SuccessSearch(foundSongs))
+        viewModelScope.launch {
+            songInteractor.searchSong(searchText)
+                .catch {
+                    screenState.postValue(SearchScreenState.ErrorSearch)
+                }.collect {
+                    if (it.isNotEmpty()) {
+                        screenState.postValue(SearchScreenState.SuccessSearch(it))
                     } else {
                         screenState.postValue(SearchScreenState.EmptySearch)
                     }
                 }
-
-                override fun onFailure(exception: Exception) {
-                    screenState.postValue(SearchScreenState.ErrorSearch)
-                }
-            },
-        )
+        }
     }
 
     fun addHistory(track: Track) {
