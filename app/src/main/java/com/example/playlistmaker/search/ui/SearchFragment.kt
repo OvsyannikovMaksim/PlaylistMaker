@@ -3,8 +3,6 @@ package com.example.playlistmaker.search.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +11,15 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.audioplayer.ui.AudioPlayerActivity
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.model.SearchScreenState
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.adapter.TrackListAdapter
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @SuppressLint("NotifyDataSetChanged")
@@ -31,7 +32,6 @@ class SearchFragment : Fragment() {
     private var searchText: String? = null
     private var songs = arrayListOf<Track>()
     private var historyList = arrayListOf<Track>()
-    private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
 
     override fun onCreateView(
@@ -75,7 +75,6 @@ class SearchFragment : Fragment() {
             beforeTextChanged = { _: CharSequence?, _: Int, _: Int, _: Int -> },
             onTextChanged = { p0: CharSequence?, _: Int, _: Int, _: Int ->
                 if (p0.isNullOrEmpty()) {
-                    viewModel.removeCallbacks()
                     binding.searchClearButton.isVisible = false
                     val history = viewModel.getHistory()
                     if (binding.editText.hasFocus() && history.isNotEmpty()) {
@@ -202,7 +201,10 @@ class SearchFragment : Fragment() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }

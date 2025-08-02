@@ -1,80 +1,69 @@
 package com.example.playlistmaker.audioplayer.ui
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.audioplayer.domain.MediaPlayerInteractor
 import com.example.playlistmaker.audioplayer.domain.model.PlayerState
-import com.example.playlistmaker.audioplayer.domain.model.ScreenState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor
 ) : ViewModel() {
-    private val handler = Handler(Looper.getMainLooper())
+    private var timerJob: Job? = null
 
-    private val playerState: MutableLiveData<ScreenState> =
-        MutableLiveData(
-            ScreenState(
-                PlayerState.Default,
-                null
-            )
-        )
+    private val playerState: MutableLiveData<PlayerState> = MutableLiveData(PlayerState.Default)
 
-    fun getPlayerState(): LiveData<ScreenState> = playerState
+    fun getPlayerState(): LiveData<PlayerState> = playerState
     fun prepareMediaPlayer(url: String?) {
         mediaPlayerInteractor.preparePlayer(url,
             {
-                playerState.postValue(
-                    ScreenState(
-                        PlayerState.Prepared,
-                        null
-                    )
-                )
+                playerState.postValue(PlayerState.Prepared)
             },
             {
-                playerState.postValue(
-                    ScreenState(
-                        PlayerState.Prepared,
-                        null
-                    )
-                )
-                handler.removeCallbacks(updateTimer)
+                playerState.postValue(PlayerState.Prepared)
+                timerJob?.cancel()
             })
     }
 
     fun startPlayer() {
         mediaPlayerInteractor.startPlayer()
-        handler.post(updateTimer)
+        playerState.postValue(PlayerState.Playing(mediaPlayerInteractor.getCurrentTime()))
+        startTimer()
     }
 
     fun pausePlayer() {
         mediaPlayerInteractor.pausePlayer()
-        playerState.postValue(
-            ScreenState(
-                PlayerState.Paused, playerState.value?.currentTime
-            )
-        )
-        handler.removeCallbacks(updateTimer)
+        timerJob?.cancel()
+        playerState.postValue(PlayerState.Paused(mediaPlayerInteractor.getCurrentTime()))
     }
 
     fun releasePlayer() {
         mediaPlayerInteractor.releasePlayer()
-        handler.removeCallbacks(updateTimer)
     }
 
-    private val updateTimer =
-        object : Runnable {
-            override fun run() {
-                playerState.postValue(
-                    ScreenState(PlayerState.Playing, mediaPlayerInteractor.getCurrentTime())
-                )
-                handler.postDelayed(this, REFRESH_TIMER_DELAY_MILLIS)
+    fun onButtonClick() {
+        when (playerState.value) {
+            is PlayerState.Paused, is PlayerState.Prepared -> startPlayer()
+            is PlayerState.Playing -> pausePlayer()
+            else -> Unit
+        }
+    }
+
+    private fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            while (true) {
+                delay(REFRESH_TIMER_DELAY_MILLIS)
+                playerState.postValue(PlayerState.Playing(mediaPlayerInteractor.getCurrentTime()))
             }
         }
+    }
 
     companion object {
-        private const val REFRESH_TIMER_DELAY_MILLIS = 500L
+        private const val REFRESH_TIMER_DELAY_MILLIS = 300L
     }
 }
