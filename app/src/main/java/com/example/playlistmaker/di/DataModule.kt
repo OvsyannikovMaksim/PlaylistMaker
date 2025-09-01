@@ -3,8 +3,10 @@ package com.example.playlistmaker.di
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.example.playlistmaker.audioplayer.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.audioplayer.domain.repository.MediaPlayerRepository
+import com.example.playlistmaker.db.data.TrackDatabase
 import com.example.playlistmaker.search.data.NetworkClient
 import com.example.playlistmaker.search.data.impl.HistoryRepositoryImpl
 import com.example.playlistmaker.search.data.impl.SongsRepositoryImpl
@@ -75,4 +77,6 @@ val dataModule = module {
     factory {
         Gson()
     }
+
+    single { Room.databaseBuilder(androidContext(), TrackDatabase::class.java, "track_database.db").build() }
 }
