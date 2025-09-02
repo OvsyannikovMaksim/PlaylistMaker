@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.playlistmaker.search.domain.model.Track
 
 @Dao
 interface TrackDao {
@@ -19,6 +18,6 @@ interface TrackDao {
     @Query("SELECT * FROM track_table")
     suspend fun getAllTracks(): List<TrackEntity>
 
-    @Query("SELECT * FROM track_table WHERE trackName=:trackName")
-    suspend fun getTracksSongName(trackName: String): List<TrackEntity>
+    @Query("SELECT COUNT(*) FROM track_table WHERE trackName=:trackName AND artistName=:artistName")
+    suspend fun isTrackInFavourite(trackName: String, artistName: String): Int
 }

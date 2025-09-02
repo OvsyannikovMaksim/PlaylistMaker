@@ -14,8 +14,8 @@ retrofit = "2.9.0"
 koin = "3.3.0"
 navigationFragment = "2.8.9"
 navigationUI="2.8.9"
-coroutines = "1.7.3"
-room_version = "2.7.2"
+coroutines = "1.6.2"
+room_version = "2.6.1"
 
 [libraries]
 adapter-rxjava2 = { module = "com.squareup.retrofit2:adapter-rxjava2", version.ref = "retrofit" }
@@ -36,7 +36,7 @@ androidx-navigation-fragment = { group = "androidx.navigation", name = "navigati
 androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUI" }
 coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines"}
 room-runtime = {group = "androidx.room", name = "room-runtime", version.ref = "room_version"}
-room-compiler = {group = "androidx.room", name = "compiler", version.ref = "room_version"}
+room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room_version"}
 room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room_version"}
 
 

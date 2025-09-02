@@ -31,7 +31,7 @@ private const val MYSHAREDPREF = "PLAY_LIST_SHARED_PREF"
 val dataModule = module {
 
     factory<MediaPlayerRepository> {
-        MediaPlayerRepositoryImpl(get())
+        MediaPlayerRepositoryImpl(get(), get())
     }
 
     factory<HistoryRepository> {
@@ -78,5 +78,5 @@ val dataModule = module {
         Gson()
     }
 
-    single { Room.databaseBuilder(androidContext(), TrackDatabase::class.java, "track_database.db").build() }
+    single<TrackDatabase> { Room.databaseBuilder(androidContext(), TrackDatabase::class.java, "track_database.db").build() }
 }
