@@ -7,6 +7,8 @@ import androidx.room.Room
 import com.example.playlistmaker.audioplayer.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.audioplayer.domain.repository.MediaPlayerRepository
 import com.example.playlistmaker.db.data.TrackDatabase
+import com.example.playlistmaker.media.data.FavTracksRepositoryImpl
+import com.example.playlistmaker.media.domain.repository.FavTracksRepository
 import com.example.playlistmaker.search.data.NetworkClient
 import com.example.playlistmaker.search.data.impl.HistoryRepositoryImpl
 import com.example.playlistmaker.search.data.impl.SongsRepositoryImpl
@@ -44,6 +46,10 @@ val dataModule = module {
 
     factory<SettingsRepository> {
         SettingsRepositoryImpl(get(), androidApplication())
+    }
+
+    factory<FavTracksRepository> {
+        FavTracksRepositoryImpl(get())
     }
 
     factory<ExternalNavigator> {
