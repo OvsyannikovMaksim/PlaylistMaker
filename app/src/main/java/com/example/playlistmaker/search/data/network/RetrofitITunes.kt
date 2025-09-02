@@ -5,7 +5,6 @@ import com.example.playlistmaker.search.data.dto.Response
 import com.example.playlistmaker.search.data.dto.SongRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.jvm.Throws
 
 class RetrofitITunes(private val iTunesApi: ITunesApi) : NetworkClient {
 
