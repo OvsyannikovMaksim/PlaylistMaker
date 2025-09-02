@@ -7,9 +7,9 @@ import com.example.playlistmaker.utils.Utils.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FavTracksRepositoryImpl(private val trackDatabase: TrackDatabase): FavTracksRepository {
+class FavTracksRepositoryImpl(private val trackDatabase: TrackDatabase) : FavTracksRepository {
 
     override suspend fun getFavTracks(): Flow<List<Track>> = flow {
-        emit(trackDatabase.trackDao().getAllTracks().map { map(it) })
+        emit(trackDatabase.trackDao().getAllTracks().map { map(it) }.reversed())
     }
 }

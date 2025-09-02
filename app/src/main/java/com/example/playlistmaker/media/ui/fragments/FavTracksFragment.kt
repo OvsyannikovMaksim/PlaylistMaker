@@ -15,14 +15,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FavTracksFragment: Fragment() {
+class FavTracksFragment : Fragment() {
 
     private var _binding: FragmentFavTracksBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<FavTracksViewModel>()
     private var isClickAllowed = true
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentFavTracksBinding.inflate(inflater, container, false)
         binding.trackRv.isVisible = false
         binding.placeholder.isVisible = false
@@ -35,7 +39,7 @@ class FavTracksFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.favTracks().observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false
-            if(it.isNotEmpty()) {
+            if (it.isNotEmpty()) {
                 binding.trackRv.adapter = TrackListAdapter(it, clickListener)
                 binding.trackRv.isVisible = true
                 binding.placeholder.isVisible = false
@@ -70,7 +74,7 @@ class FavTracksFragment: Fragment() {
         return current
     }
 
-    companion object{
+    companion object {
         fun newInstance() = FavTracksFragment()
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }

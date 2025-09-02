@@ -13,7 +13,7 @@ class FavTracksViewModel(val favTracksInteractor: FavTracksInteractor) : ViewMod
     private val favTracks: MutableLiveData<List<Track>> = MutableLiveData()
     fun favTracks(): LiveData<List<Track>> = favTracks
 
-   fun getFavTracks() {
+    fun getFavTracks() {
         viewModelScope.launch {
             favTracksInteractor.getFavTracks().collect {
                 favTracks.postValue(it)
