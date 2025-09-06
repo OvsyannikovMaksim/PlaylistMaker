@@ -6,7 +6,7 @@ import com.example.playlistmaker.media.domain.PlaylistInteractor
 import com.example.playlistmaker.media.domain.model.Playlist
 import kotlinx.coroutines.launch
 
-class AddPlaylistViewModel(val playlistInteractor: PlaylistInteractor): ViewModel() {
+class AddPlaylistViewModel(private val playlistInteractor: PlaylistInteractor): ViewModel() {
 
     fun savePlayList(playlist: Playlist) {
         viewModelScope.launch {

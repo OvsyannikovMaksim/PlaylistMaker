@@ -32,7 +32,7 @@ val viewModelModule = module {
         FavTracksViewModel(get())
     }
     viewModel {
-        PlaylistViewModel()
+        PlaylistViewModel(get())
     }
 
     viewModel {

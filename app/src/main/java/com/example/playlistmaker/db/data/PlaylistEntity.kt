@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class PlaylistEntity(
     val name: String,
     val desc: String,
-    val image: String,
+    val imagePath: String?,
     val tracks: String,
     val tracksAmount: Int
 ) {

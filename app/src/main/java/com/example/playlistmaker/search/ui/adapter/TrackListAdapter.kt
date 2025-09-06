@@ -47,8 +47,7 @@ class TrackListAdapter(
             trackName.text = track.trackName
             trackTime.text = track.trackTime
             artists.text = track.artistName
-            Glide
-                .with(itemView)
+            Glide.with(itemView)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.placeholder)
                 .fitCenter()

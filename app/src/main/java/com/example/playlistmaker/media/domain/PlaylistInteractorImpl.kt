@@ -3,9 +3,10 @@ package com.example.playlistmaker.media.domain
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.domain.repository.PlaylistRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class PlaylistInteractorImpl(val playlistRepository: PlaylistRepository): PlaylistInteractor {
+class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository): PlaylistInteractor {
     override suspend fun addPlayList(playlist: Playlist) {
         withContext(Dispatchers.IO) {
             playlistRepository.addPlayList(playlist)
@@ -16,5 +17,9 @@ class PlaylistInteractorImpl(val playlistRepository: PlaylistRepository): Playli
         withContext(Dispatchers.IO) {
             playlistRepository.removePlayList(playlist)
         }
+    }
+
+    override suspend fun getPlaylists(): Flow<List<Playlist>> {
+        return playlistRepository.getPlaylists()
     }
 }
