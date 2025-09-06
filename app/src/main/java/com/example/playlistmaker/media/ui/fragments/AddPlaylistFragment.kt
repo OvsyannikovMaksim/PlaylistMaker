@@ -27,7 +27,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 
-class AddPlaylistFragment: Fragment() {
+class AddPlaylistFragment : Fragment() {
 
     private var _binding: FragmentAddPlaylistBinding? = null
     private val binding get() = _binding!!
@@ -39,8 +39,13 @@ class AddPlaylistFragment: Fragment() {
         setPicture(uri)
         this.uri = uri
     }
+    private var isImageSet: Boolean = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentAddPlaylistBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -55,20 +60,19 @@ class AddPlaylistFragment: Fragment() {
         )
 
         binding.toolbar.setNavigationOnClickListener {
-            if(binding.inputPlaylistName.text.isNullOrEmpty() && binding.inputPlaylistDesc.text.isNullOrEmpty()) {
+            if (binding.inputPlaylistName.text.isNullOrEmpty()
+                && binding.inputPlaylistDesc.text.isNullOrEmpty()
+                && !isImageSet
+            ) {
                 findNavController().popBackStack()
             } else {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.add_playlist_dialog_title)
                     .setMessage(R.string.add_playlist_dialog_desc)
-                    .setPositiveButton("Ok"){
-                            _, _ ->
+                    .setPositiveButton("Ok") { _, _ ->
                         findNavController().popBackStack()
-
-                    }.setNeutralButton("Cancel"){
-                            _, _ ->
-                    }
-                    .show()
+                    }.setNeutralButton("Cancel") { _, _ ->
+                    }.show()
             }
         }
 
@@ -81,25 +85,34 @@ class AddPlaylistFragment: Fragment() {
             val desc = binding.inputPlaylistDesc.text.toString()
             val imagePath = saveImageToPrivateStorage(uri)
             viewModel.savePlayList(Playlist(name, desc, imagePath, emptyList(), 0))
-            Toast.makeText(requireContext(),"Playlist '${name}' was created", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Playlist '${name}' was created", Toast.LENGTH_LONG)
+                .show()
             findNavController().popBackStack()
         }
     }
 
     private fun setPicture(uri: Uri?) {
+        isImageSet = true
         Glide.with(requireContext())
             .load(uri)
             .fitCenter()
+            .error{
+                isImageSet = false
+            }
+            .placeholder(R.drawable.add_photo_united)
             .transform(RoundedCorners(Utils.dpToPx(8.0F, requireContext())))
             .into(binding.addPicture)
     }
 
     private fun saveImageToPrivateStorage(uri: Uri?): String? {
-        if(uri == null) {
+        if (uri == null) {
             return null
         }
-        val filePath = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlist_image")
-        if (!filePath.exists()){
+        val filePath = File(
+            requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+            "playlist_image"
+        )
+        if (!filePath.exists()) {
             filePath.mkdirs()
         }
         val file = File(filePath, "${UUID.randomUUID()}.jpg")

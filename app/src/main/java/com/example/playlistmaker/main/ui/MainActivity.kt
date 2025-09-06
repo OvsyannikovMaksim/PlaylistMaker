@@ -17,17 +17,21 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.addPlaylistFragment -> {
+                R.id.addPlaylistFragment, R.id.audioPlayerFragment -> {
                     binding.bottomNavigationView.isVisible = false
+                    binding.divider.isVisible = false
                 }
+
                 else -> {
-                    binding.bottomNavigationView.isVisible= true
+                    binding.bottomNavigationView.isVisible = true
+                    binding.divider.isVisible = true
                 }
             }
         }

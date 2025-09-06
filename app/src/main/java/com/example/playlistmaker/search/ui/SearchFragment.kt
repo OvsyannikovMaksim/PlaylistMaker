@@ -8,12 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
-import com.example.playlistmaker.audioplayer.ui.AudioPlayerActivity
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.model.SearchScreenState
 import com.example.playlistmaker.search.domain.model.Track
@@ -193,7 +194,8 @@ class SearchFragment : Fragment() {
         TrackListAdapter.TrackClickListener { track ->
             if (clickDebounce()) {
                 viewModel.addHistory(track)
-                AudioPlayerActivity.launch(requireActivity(), track)
+                findNavController().navigate(R.id.action_searchFragment_to_audioPlayerActivity,
+                    bundleOf("audioArgs" to track))
             }
         }
 
