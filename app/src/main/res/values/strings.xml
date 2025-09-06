@@ -32,4 +32,6 @@
     <string name="add_playlist_title">New Playlist</string>
     <string name="add_playlist_name_hint">Name*</string>
     <string name="add_playlist_desc_hint">Description</string>
+    <string name="add_playlist_dialog_title">Are you sure?</string>
+    <string name="add_playlist_dialog_desc">All unsaved data will be deleted</string>
 </resources>

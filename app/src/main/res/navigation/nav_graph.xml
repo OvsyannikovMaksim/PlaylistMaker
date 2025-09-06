@@ -19,7 +19,11 @@
         <action
             android:id="@+id/action_mediaFragment_to_audioPlayerActivity"
             app:destination="@id/audioPlayerActivity" />
+        <action
+            android:id="@+id/action_PlaylistFragment_to_addPlaylistFragment"
+            app:destination="@id/addPlaylistFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.playlistmaker.search.ui.SearchFragment"
@@ -31,5 +35,11 @@
         android:name="com.example.playlistmaker.audioplayer.ui.AudioPlayerActivity"
         android:label="AudioPlayerActivity"
         tools:layout="@layout/activity_audioplayer"/>
+
+    <fragment
+        android:id="@+id/addPlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.fragments.AddPlaylistFragment"
+        android:label="PlaylistFragment"
+        tools:layout="@layout/fragment_add_playlist"/>
 
 </navigation>
