@@ -32,7 +32,9 @@ class PlaylistsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.newPlaylistButton.setOnClickListener { findNavController().navigate(R.id.action_PlaylistFragment_to_addPlaylistFragment) }
+        binding.newPlaylistButton.setOnClickListener {
+            findNavController().navigate(R.id.action_PlaylistFragment_to_addPlaylistFragment)
+        }
         viewModel.playlists().observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false
             binding.placeholder.isVisible = it.isNullOrEmpty()

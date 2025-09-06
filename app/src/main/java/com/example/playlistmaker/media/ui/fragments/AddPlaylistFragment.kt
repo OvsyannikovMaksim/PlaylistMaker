@@ -8,6 +8,7 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
@@ -80,6 +81,7 @@ class AddPlaylistFragment: Fragment() {
             val desc = binding.inputPlaylistDesc.text.toString()
             val imagePath = saveImageToPrivateStorage(uri)
             viewModel.savePlayList(Playlist(name, desc, imagePath, emptyList(), 0))
+            Toast.makeText(requireContext(),"Playlist '${name} was created'", Toast.LENGTH_LONG).show()
             findNavController().popBackStack()
         }
     }
