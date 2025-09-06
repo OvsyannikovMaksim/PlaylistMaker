@@ -18,4 +18,5 @@
     <color name="audioplayer_button">@color/yp_black</color>
     <color name="audioplayer_text_info_title">@color/yp_grey</color>
     <color name="bottom_bar">@color/white</color>
+    <color name="bottom_sheet">@color/yp_light_grey</color>
 </resources>

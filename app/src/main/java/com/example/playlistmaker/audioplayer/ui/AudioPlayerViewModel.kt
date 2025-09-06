@@ -6,21 +6,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.audioplayer.domain.MediaPlayerInteractor
 import com.example.playlistmaker.audioplayer.domain.model.PlayerState
+import com.example.playlistmaker.media.domain.PlaylistInteractor
+import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
-    private val mediaPlayerInteractor: MediaPlayerInteractor
+    private val mediaPlayerInteractor: MediaPlayerInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
     private var timerJob: Job? = null
 
     private val playerState: MutableLiveData<PlayerState> = MutableLiveData(PlayerState.Default)
     private val favState: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val playlists: MutableLiveData<List<Playlist>> = MutableLiveData()
 
     fun getPlayerState(): LiveData<PlayerState> = playerState
     fun getFavState(): LiveData<Boolean> = favState
+    fun playlists(): LiveData<List<Playlist>> = playlists
 
     fun prepareMediaPlayer(url: String?) {
         mediaPlayerInteractor.preparePlayer(url,
@@ -77,6 +82,31 @@ class AudioPlayerViewModel(
         viewModelScope.launch {
             favState.postValue(mediaPlayerInteractor.isTrackInFavourite(track))
         }
+    }
+
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists().collect {
+                playlists.postValue(it)
+            }
+        }
+    }
+
+    fun addTrackToPlaylist(playlist: Playlist, track: Track): Boolean {
+        if (playlist.tracks.contains(track)) {
+            return false
+        }
+        val newPlaylist = Playlist(
+            playlist.name,
+            playlist.desc,
+            playlist.imagePath,
+            playlist.tracks.plus(track),
+            playlist.tracksAmount + 1
+        )
+        viewModelScope.launch {
+            playlistInteractor.addPlayList(newPlaylist)
+        }
+        return true
     }
 
     private fun startTimer() {

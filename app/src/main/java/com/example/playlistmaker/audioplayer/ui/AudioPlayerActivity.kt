@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.view.isVisible
@@ -11,8 +13,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioplayerBinding
+import com.example.playlistmaker.media.ui.adapter.PlaylistBottomSheetAdapter
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.Utils.dpToPx
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPlayerActivity : AppCompatActivity() {
@@ -21,6 +25,8 @@ class AudioPlayerActivity : AppCompatActivity() {
     private val viewModel by viewModel<AudioPlayerViewModel>()
 
     private var trackInfo: Track? = null
+
+    private val bottomSheetBehavior by lazy { BottomSheetBehavior.from(binding.bottomSheet) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +39,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
+
+        viewModel.getPlaylists()
+
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         viewModel.getPlayerState().observe(this) {
             binding.playButton.background = getDrawable(
@@ -49,6 +59,27 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.playlists().observe(this) {
+            binding.playlistsRv.isVisible = !it.isNullOrEmpty()
+            binding.playlistsRv.adapter = PlaylistBottomSheetAdapter(it) { playlist ->
+                if (viewModel.addTrackToPlaylist(playlist, trackInfo!!)) {
+                    Toast.makeText(
+                        applicationContext,
+                        "Added to playlist '${playlist.name}'",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    viewModel.getPlaylists()
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "Already in playlist '${playlist.name}'",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+
         setTrack()
         prepareMediaPlayer()
         setLikeButton()
@@ -59,6 +90,35 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.likeButton.setOnClickListener {
             trackInfo?.let { viewModel.onLikeButtonClick(it) }
         }
+        binding.newPlaylistButton.setOnClickListener {
+        }
+        binding.playlistButton.setOnClickListener {
+            bottomSheetBehavior.apply {
+                isFitToContents = false
+                halfExpandedRatio = 0.6f
+                skipCollapsed = true
+                state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            }
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+                    else -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = slideOffset.coerceIn(0f, 1f).coerceAtMost(1f)
+            }
+        })
     }
 
     override fun onPause() {
