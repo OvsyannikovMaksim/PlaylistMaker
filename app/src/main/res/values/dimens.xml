@@ -8,6 +8,7 @@
     <dimen name="pic_size">24dp</dimen>
     <dimen name="text_size_16">16sp</dimen>
     <dimen name="corner_radius">16dp</dimen>
+    <dimen name="corner_radius_8">8dp</dimen>
     <dimen name="corner_radius_54">54dp</dimen>
     <dimen name="icon_padding_10">10dp</dimen>
 </resources>

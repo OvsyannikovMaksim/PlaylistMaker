@@ -28,4 +28,8 @@
     <string name="empty_fav">Your media is empty</string>
     <string name="empty_playlist">You don\'t create\n any playlists</string>
     <string name="create_playlist_button">New playlist</string>
+    <string name="add_playlist_button">Create</string>
+    <string name="add_playlist_title">New Playlist</string>
+    <string name="add_playlist_name_hint">Name*</string>
+    <string name="add_playlist_desc_hint">Description</string>
 </resources>
