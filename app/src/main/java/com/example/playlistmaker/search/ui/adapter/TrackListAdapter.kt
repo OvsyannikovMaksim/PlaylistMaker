@@ -13,7 +13,7 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.Utils.dpToPx
 
 class TrackListAdapter(
-    private val trackList: ArrayList<Track>,
+    private val trackList: List<Track>,
     private val clickListener: TrackClickListener,
 ) : RecyclerView.Adapter<TrackListAdapter.TrackListViewHolder>() {
     override fun onBindViewHolder(

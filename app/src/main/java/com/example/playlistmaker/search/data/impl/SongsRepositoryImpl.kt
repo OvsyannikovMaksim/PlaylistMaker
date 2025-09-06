@@ -5,7 +5,7 @@ import com.example.playlistmaker.search.domain.repository.SongsRepository
 import com.example.playlistmaker.search.data.dto.SongRequest
 import com.example.playlistmaker.search.data.dto.SongResponse
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.utils.Utils
+import com.example.playlistmaker.utils.Utils.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -17,17 +17,7 @@ class SongsRepositoryImpl(
         when (response.resultCode) {
             200 -> {
                 val data = (response as SongResponse).results.map {
-                    Track(
-                        it.trackName,
-                        it.artistName,
-                        Utils.timeConverter(it.trackTimeMillis),
-                        it.artworkUrl100,
-                        it.collectionName,
-                        it.releaseDate,
-                        it.primaryGenreName,
-                        it.country,
-                        it.previewUrl,
-                    )
+                    map(it)
                 }
                 emit(data as ArrayList<Track>)
             }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.audioplayer.domain.MediaPlayerInteractor
 import com.example.playlistmaker.audioplayer.domain.model.PlayerState
+import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -16,8 +17,11 @@ class AudioPlayerViewModel(
     private var timerJob: Job? = null
 
     private val playerState: MutableLiveData<PlayerState> = MutableLiveData(PlayerState.Default)
+    private val favState: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun getPlayerState(): LiveData<PlayerState> = playerState
+    fun getFavState(): LiveData<Boolean> = favState
+
     fun prepareMediaPlayer(url: String?) {
         mediaPlayerInteractor.preparePlayer(url,
             {
@@ -45,11 +49,33 @@ class AudioPlayerViewModel(
         mediaPlayerInteractor.releasePlayer()
     }
 
-    fun onButtonClick() {
+    fun onPlayButtonClick() {
         when (playerState.value) {
             is PlayerState.Paused, is PlayerState.Prepared -> startPlayer()
             is PlayerState.Playing -> pausePlayer()
             else -> Unit
+        }
+    }
+
+    fun onLikeButtonClick(track: Track) {
+        viewModelScope.launch {
+            when (favState.value) {
+                true -> {
+                    mediaPlayerInteractor.removeFavourite(track)
+                    favState.postValue(false)
+                }
+
+                else -> {
+                    mediaPlayerInteractor.addToFavourite(track)
+                    favState.postValue(true)
+                }
+            }
+        }
+    }
+
+    fun setLikeButtonState(track: Track) {
+        viewModelScope.launch {
+            favState.postValue(mediaPlayerInteractor.isTrackInFavourite(track))
         }
     }
 

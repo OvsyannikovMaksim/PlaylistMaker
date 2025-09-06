@@ -42,10 +42,22 @@ class AudioPlayerActivity : AppCompatActivity() {
             binding.currentTime.text = it.currentTime
         }
 
+        viewModel.getFavState().observe(this) {
+            when (it) {
+                false -> binding.likeButton.setBackgroundResource(R.drawable.like_button)
+                else -> binding.likeButton.setBackgroundResource(R.drawable.like_button_tapped)
+            }
+        }
+
         setTrack()
         prepareMediaPlayer()
+        setLikeButton()
+
         binding.playButton.setOnClickListener {
-            viewModel.onButtonClick()
+            viewModel.onPlayButtonClick()
+        }
+        binding.likeButton.setOnClickListener {
+            trackInfo?.let { viewModel.onLikeButtonClick(it) }
         }
     }
 
@@ -94,6 +106,10 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun prepareMediaPlayer() {
         viewModel.prepareMediaPlayer(trackInfo?.previewUrl)
+    }
+
+    private fun setLikeButton() {
+        trackInfo?.let { viewModel.setLikeButtonState(it) }
     }
 
     companion object {
