@@ -6,9 +6,11 @@ import android.media.MediaPlayer
 import androidx.room.Room
 import com.example.playlistmaker.audioplayer.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.audioplayer.domain.repository.MediaPlayerRepository
-import com.example.playlistmaker.db.data.TrackDatabase
+import com.example.playlistmaker.db.data.AppDatabase
 import com.example.playlistmaker.media.data.FavTracksRepositoryImpl
+import com.example.playlistmaker.media.data.PlaylistRepositoryImpl
 import com.example.playlistmaker.media.domain.repository.FavTracksRepository
+import com.example.playlistmaker.media.domain.repository.PlaylistRepository
 import com.example.playlistmaker.search.data.NetworkClient
 import com.example.playlistmaker.search.data.impl.HistoryRepositoryImpl
 import com.example.playlistmaker.search.data.impl.SongsRepositoryImpl
@@ -52,6 +54,10 @@ val dataModule = module {
         FavTracksRepositoryImpl(get())
     }
 
+    factory<PlaylistRepository> {
+        PlaylistRepositoryImpl(get())
+    }
+
     factory<ExternalNavigator> {
         ExternalNavigatorImpl(androidContext())
     }
@@ -84,5 +90,5 @@ val dataModule = module {
         Gson()
     }
 
-    single<TrackDatabase> { Room.databaseBuilder(androidContext(), TrackDatabase::class.java, "track_database.db").build() }
+    single<AppDatabase> { Room.databaseBuilder(androidContext(), AppDatabase::class.java, "track_database.db").build() }
 }

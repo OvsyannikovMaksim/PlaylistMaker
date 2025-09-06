@@ -2,14 +2,14 @@ package com.example.playlistmaker.audioplayer.data
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.audioplayer.domain.repository.MediaPlayerRepository
-import com.example.playlistmaker.db.data.TrackDatabase
+import com.example.playlistmaker.db.data.AppDatabase
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.Utils
 import com.example.playlistmaker.utils.Utils.map
 
 class MediaPlayerRepositoryImpl(
     private val mediaPlayer: MediaPlayer,
-    private val trackDatabase: TrackDatabase
+    private val database: AppDatabase
 ) : MediaPlayerRepository {
 
     override fun preparePlayer(
@@ -42,15 +42,15 @@ class MediaPlayerRepositoryImpl(
     }
 
     override suspend fun addToFavourite(track: Track) {
-        trackDatabase.trackDao().insertTrack(map(track))
+        database.trackDao().insertTrack(map(track))
     }
 
     override suspend fun removeFavourite(track: Track) {
-        trackDatabase.trackDao().deleteTrack(map(track))
+        database.trackDao().deleteTrack(map(track))
     }
 
     override suspend fun isTrackInFavourite(track: Track): Int {
         val trackEntity = map(track)
-        return trackDatabase.trackDao().isTrackInFavourite(trackEntity.trackName, trackEntity.artistName)
+        return database.trackDao().isTrackInFavourite(trackEntity.trackName, trackEntity.artistName)
     }
 }

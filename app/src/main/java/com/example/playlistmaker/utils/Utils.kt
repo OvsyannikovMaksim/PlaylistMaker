@@ -2,9 +2,12 @@ package com.example.playlistmaker.utils
 
 import android.content.Context
 import android.util.TypedValue
+import com.example.playlistmaker.db.data.PlaylistEntity
 import com.example.playlistmaker.db.data.TrackEntity
+import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.search.data.dto.TrackDto
 import com.example.playlistmaker.search.domain.model.Track
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -61,6 +64,16 @@ object Utils {
             track.primaryGenreName,
             track.country,
             track.previewUrl,
+        )
+    }
+
+    fun map(playlist: Playlist): PlaylistEntity {
+        return PlaylistEntity(
+            playlist.name,
+            playlist.desc,
+            playlist.imageUri.toString(),
+            Gson().toJson(playlist.tracks),
+            playlist.tracksAmount
         )
     }
 }
