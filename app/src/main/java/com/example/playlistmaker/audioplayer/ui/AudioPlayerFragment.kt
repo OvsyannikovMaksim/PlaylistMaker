@@ -1,7 +1,6 @@
 package com.example.playlistmaker.audioplayer.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,36 +27,28 @@ class AudioPlayerFragment : Fragment() {
 
     private var trackInfo: Track? = null
 
-    private val bottomSheetBehavior by lazy { BottomSheetBehavior.from(binding.bottomSheet) }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("TEST", "onCreateView")
         _binding = FragmentAudioplayerBinding.inflate(inflater, container, false)
+        val args: AudioPlayerFragmentArgs by navArgs()
+        trackInfo = args.audioArgs
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("TEST AudioPlayerActivity", findNavController().currentBackStack.value.toString())
-
-        Log.d("TEST", "onViewCreated")
-
-        val args: AudioPlayerFragmentArgs by navArgs()
-        trackInfo = args.audioArgs
 
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+            findNavController().popBackStack()
         }
 
         viewModel.getPlaylists()
+        hideBottomSheet()
 
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
-        viewModel.getPlayerState().observe(this) {
+        viewModel.getPlayerState().observe(viewLifecycleOwner) {
             binding.playButton.background = getDrawable(
                 requireContext(),
                 it.buttonImageRes,
@@ -65,14 +56,14 @@ class AudioPlayerFragment : Fragment() {
             binding.currentTime.text = it.currentTime
         }
 
-        viewModel.getFavState().observe(this) {
+        viewModel.getFavState().observe(viewLifecycleOwner) {
             when (it) {
                 false -> binding.likeButton.setBackgroundResource(R.drawable.like_button)
                 else -> binding.likeButton.setBackgroundResource(R.drawable.like_button_tapped)
             }
         }
 
-        viewModel.playlists().observe(this) {
+        viewModel.playlists().observe(viewLifecycleOwner) {
             binding.playlistsRv.isVisible = !it.isNullOrEmpty()
             binding.playlistsRv.adapter = PlaylistBottomSheetAdapter(it) { playlist ->
                 if (viewModel.addTrackToPlaylist(playlist, trackInfo!!)) {
@@ -81,7 +72,7 @@ class AudioPlayerFragment : Fragment() {
                         "Added to playlist '${playlist.name}'",
                         Toast.LENGTH_LONG
                     ).show()
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    hideBottomSheet()
                     viewModel.getPlaylists()
                 } else {
                     Toast.makeText(
@@ -104,11 +95,11 @@ class AudioPlayerFragment : Fragment() {
             trackInfo?.let { viewModel.onLikeButtonClick(it) }
         }
         binding.newPlaylistButton.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            hideBottomSheet()
             findNavController().navigate(R.id.action_audioPlayerActivity_to_addPlaylistFragment)
         }
         binding.playlistButton.setOnClickListener {
-            bottomSheetBehavior.apply {
+            BottomSheetBehavior.from(binding.bottomSheet).apply {
                 isFitToContents = false
                 halfExpandedRatio = 0.6f
                 skipCollapsed = true
@@ -116,12 +107,10 @@ class AudioPlayerFragment : Fragment() {
             }
         }
 
-        bottomSheetBehavior.addBottomSheetCallback(object :
+        BottomSheetBehavior.from(binding.bottomSheet).addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                Log.d("TEST", newState.toString())
-
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding.overlay.visibility = View.GONE
@@ -137,7 +126,6 @@ class AudioPlayerFragment : Fragment() {
                 binding.overlay.alpha = slideOffset.coerceIn(0f, 1f).coerceAtMost(1f)
             }
         })
-        Log.d("TEST", "onViewCreated end")
     }
 
     override fun onPause() {
@@ -183,5 +171,9 @@ class AudioPlayerFragment : Fragment() {
 
     private fun setLikeButton() {
         trackInfo?.let { viewModel.setLikeButtonState(it) }
+    }
+
+    private fun hideBottomSheet() {
+        BottomSheetBehavior.from(binding.bottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
     }
 }
