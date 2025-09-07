@@ -33,13 +33,6 @@ class AddPlaylistFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModel<AddPlaylistViewModel>()
     private var uri: Uri? = null
-    private val pickImage = registerForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        setPicture(uri)
-        this.uri = uri
-    }
-    private var isImageSet: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +46,13 @@ class AddPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val pickImage = registerForActivityResult(
+            ActivityResultContracts.PickVisualMedia()
+        ) { uri ->
+            setPicture(uri)
+            this.uri = uri
+        }
+
         binding.inputPlaylistName.addTextChangedListener(
             onTextChanged = { _: CharSequence?, _: Int, _: Int, count: Int ->
                 binding.addPlaylistButton.isEnabled = count > 0
@@ -62,16 +62,16 @@ class AddPlaylistFragment : Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             if (binding.inputPlaylistName.text.isNullOrEmpty()
                 && binding.inputPlaylistDesc.text.isNullOrEmpty()
-                && !isImageSet
+                && uri == null
             ) {
                 findNavController().popBackStack()
             } else {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.add_playlist_dialog_title)
                     .setMessage(R.string.add_playlist_dialog_desc)
-                    .setPositiveButton("Ok") { _, _ ->
+                    .setPositiveButton(R.string.add_playlist_dialog_positive_button) { _, _ ->
                         findNavController().popBackStack()
-                    }.setNeutralButton("Cancel") { _, _ ->
+                    }.setNeutralButton(R.string.add_playlist_dialog_neutral_button) { _, _ ->
                     }.show()
             }
         }
@@ -92,13 +92,9 @@ class AddPlaylistFragment : Fragment() {
     }
 
     private fun setPicture(uri: Uri?) {
-        isImageSet = true
-        Glide.with(requireContext())
+        Glide.with(this)
             .load(uri)
-            .fitCenter()
-            .error{
-                isImageSet = false
-            }
+            .centerCrop()
             .placeholder(R.drawable.add_photo_united)
             .transform(RoundedCorners(Utils.dpToPx(8.0F, requireContext())))
             .into(binding.addPicture)

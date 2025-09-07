@@ -40,10 +40,15 @@ class PlaylistAdapter(private val playlists: List<Playlist>) :
                 playlist.tracksAmount,
                 playlist.tracksAmount
             )
+            val imageUri = if(playlist.imagePath==null) {
+                null
+            } else {
+                File(playlist.imagePath).toUri()
+            }
             Glide.with(itemView)
-                .load(File(playlist.imagePath).toUri())
+                .load(imageUri)
                 .placeholder(R.drawable.placeholder)
-                .fitCenter()
+                .centerCrop()
                 .transform(RoundedCorners(Utils.dpToPx(8.0F, itemView.context)))
                 .into(image)
         }

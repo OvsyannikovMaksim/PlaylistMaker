@@ -9,7 +9,8 @@
         android:id="@+id/playlist_image"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp"
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -20,12 +21,18 @@
     <TextView
         android:id="@+id/playlist_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:singleLine="true"/>
 
         <TextView
             android:id="@+id/playlist_amount"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:singleLine="true"/>
     </LinearLayout>
     
 

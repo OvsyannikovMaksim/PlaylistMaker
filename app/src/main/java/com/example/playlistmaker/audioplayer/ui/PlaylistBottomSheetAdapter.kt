@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.media.domain.model.Playlist
-import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.utils.Utils
 import java.io.File
 
@@ -49,10 +48,15 @@ class PlaylistBottomSheetAdapter(
                 playlist.tracksAmount,
                 playlist.tracksAmount
             )
+            val imageUri = if(playlist.imagePath==null) {
+                null
+            } else {
+                File(playlist.imagePath).toUri()
+            }
             Glide.with(itemView)
-                .load(File(playlist.imagePath).toUri())
+                .load(imageUri)
                 .placeholder(R.drawable.placeholder)
-                .fitCenter()
+                .centerCrop()
                 .transform(RoundedCorners(Utils.dpToPx(2.0F, itemView.context)))
                 .into(image)
         }
