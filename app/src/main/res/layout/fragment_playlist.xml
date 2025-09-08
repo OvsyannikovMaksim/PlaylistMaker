@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/yp_light_grey">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@null"
+            app:navigationIcon="@drawable/back_button"
+            app:titleTextAppearance="@style/AppBarTextStyle"/>
+
+        <ImageView
+            android:id="@+id/playlist_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            android:src="@drawable/placeholder"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/playlist_title"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/playlist_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/yp_black"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/playlist_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/playlist_desc"
+            style="@style/PlaylistTextTitle"
+            tool:text="Best songs 2021"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/playlist_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/playlist_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/playlist_time"
+            style="@style/PlaylistTextBase"
+            tool:text="2022"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/playlist_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/yp_black"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/playlist_desc"
+            app:layout_constraintStart_toStartOf="parent"
+            style="@style/PlaylistTextBase"
+            tool:text="300 минут"/>
+
+        <ImageView
+            android:id="@+id/dot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/dot"
+            app:layout_constraintBottom_toTopOf="@id/playlist_time"
+            app:layout_constraintStart_toEndOf="@id/playlist_time"
+            app:layout_constraintTop_toBottomOf="@id/playlist_time" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/playlist_track_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/yp_black"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/playlist_desc"
+            app:layout_constraintStart_toEndOf="@id/dot"
+            style="@style/PlaylistTextBase"
+            tool:text="98 треков"/>
+
+        <ImageView
+            android:id="@+id/share_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/share_icon_black"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/playlist_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/options_button" />
+
+        <ImageView
+            android:id="@+id/options_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/options_icon"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/playlist_time"
+            app:layout_constraintStart_toEndOf="@id/share_button"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/botton_sheet_background"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:behavior_fitToContents="true"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="120dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/bottom_sheet_rectangle" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tracks_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tool:listitem="@layout/track_item_list"/>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

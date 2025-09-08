@@ -14,7 +14,8 @@ import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.utils.Utils
 import java.io.File
 
-class PlaylistAdapter(private val playlists: List<Playlist>) :
+class PlaylistAdapter(private val playlists: List<Playlist>,
+    private val listener: PlayListListener) :
     RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
@@ -27,6 +28,7 @@ class PlaylistAdapter(private val playlists: List<Playlist>) :
 
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         holder.bind(playlists[position])
+        holder.itemView.setOnClickListener { listener.onPlaylistClick(playlists[position]) }
     }
 
     class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -52,5 +54,9 @@ class PlaylistAdapter(private val playlists: List<Playlist>) :
                 .transform(RoundedCorners(Utils.dpToPx(8.0F, itemView.context)))
                 .into(image)
         }
+    }
+
+    fun interface PlayListListener {
+        fun onPlaylistClick(playlist: Playlist)
     }
 }
