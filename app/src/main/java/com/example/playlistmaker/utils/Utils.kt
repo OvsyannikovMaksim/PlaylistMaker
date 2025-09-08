@@ -7,8 +7,6 @@ import com.example.playlistmaker.db.data.TrackEntity
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.search.data.dto.TrackDto
 import com.example.playlistmaker.search.domain.model.Track
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -28,6 +26,7 @@ object Utils {
 
     fun map(trackDto: TrackDto): Track {
         return Track(
+            0,
             trackDto.trackName,
             trackDto.artistName,
             timeConverter(trackDto.trackTimeMillis),
@@ -42,6 +41,7 @@ object Utils {
 
     fun map(trackEntity: TrackEntity): Track {
         return Track(
+            trackEntity.id,
             trackEntity.trackName,
             trackEntity.artistName,
             trackEntity.trackTime,
@@ -56,6 +56,7 @@ object Utils {
 
     fun map(track: Track): TrackEntity {
         return TrackEntity(
+            track.id,
             track.trackName,
             track.artistName,
             track.trackTime,
@@ -70,20 +71,20 @@ object Utils {
 
     fun map(playlist: Playlist): PlaylistEntity {
         return PlaylistEntity(
+            playlist.id,
             playlist.name,
             playlist.desc,
             playlist.imagePath,
-            Gson().toJson(playlist.tracks),
             playlist.tracksAmount
         )
     }
 
     fun map(playlistEntity: PlaylistEntity): Playlist {
         return Playlist(
+            playlistEntity.id,
             playlistEntity.name,
             playlistEntity.desc,
             playlistEntity.imagePath,
-            Gson().fromJson(playlistEntity.tracks,  object : TypeToken<List<Track>>() {}.type),
             playlistEntity.tracksAmount
         )
     }

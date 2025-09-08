@@ -1,5 +1,6 @@
 package com.example.playlistmaker.audioplayer.ui
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,10 +23,12 @@ class AudioPlayerViewModel(
     private val playerState: MutableLiveData<PlayerState> = MutableLiveData(PlayerState.Default)
     private val favState: MutableLiveData<Boolean> = MutableLiveData(false)
     private val playlists: MutableLiveData<List<Playlist>> = MutableLiveData()
+    private val isAddedToPlaylist: MutableLiveData<IsTrackAdded> = MutableLiveData(IsTrackAdded.Waiting)
 
     fun getPlayerState(): LiveData<PlayerState> = playerState
     fun getFavState(): LiveData<Boolean> = favState
     fun playlists(): LiveData<List<Playlist>> = playlists
+    fun isAddedToPlaylist(): LiveData<IsTrackAdded> = isAddedToPlaylist
 
     fun prepareMediaPlayer(url: String?) {
         mediaPlayerInteractor.preparePlayer(url,
@@ -92,21 +95,22 @@ class AudioPlayerViewModel(
         }
     }
 
-    fun addTrackToPlaylist(playlist: Playlist, track: Track): Boolean {
-        if (playlist.tracks.contains(track)) {
-            return false
-        }
-        val newPlaylist = Playlist(
-            playlist.name,
-            playlist.desc,
-            playlist.imagePath,
-            playlist.tracks.plus(track),
-            playlist.tracksAmount + 1
-        )
+    fun addTrackToPlaylist(playlist: Playlist, track: Track) {
         viewModelScope.launch {
-            playlistInteractor.addPlayList(newPlaylist)
+            val newPlaylist = Playlist(
+                playlist.id,
+                playlist.name,
+                playlist.desc,
+                playlist.imagePath,
+                playlist.tracksAmount + 1
+            )
+            val res = playlistInteractor.addTrackToPlaylist(newPlaylist, track)
+            if (res) {
+                isAddedToPlaylist.postValue(IsTrackAdded.Added(playlist.name))
+            } else {
+                isAddedToPlaylist.postValue(IsTrackAdded.NoAdd(playlist.name))
+            }
         }
-        return true
     }
 
     private fun startTimer() {
@@ -121,5 +125,11 @@ class AudioPlayerViewModel(
 
     companion object {
         private const val REFRESH_TIMER_DELAY_MILLIS = 300L
+    }
+
+    sealed class IsTrackAdded(val needShow: Boolean?, val playlistName: String){
+        data class Added(val name: String): IsTrackAdded(true, name)
+        data class NoAdd(val name: String): IsTrackAdded(false, name)
+        data object Waiting: IsTrackAdded(null, "")
     }
 }
