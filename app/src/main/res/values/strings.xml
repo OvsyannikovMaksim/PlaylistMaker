@@ -28,4 +28,21 @@
     <string name="empty_fav">Your media is empty</string>
     <string name="empty_playlist">You don\'t create\n any playlists</string>
     <string name="create_playlist_button">New playlist</string>
+    <string name="add_playlist_button">Create</string>
+    <string name="add_playlist_title">New Playlist</string>
+    <string name="add_playlist_name_hint">Name*</string>
+    <string name="add_playlist_desc_hint">Description</string>
+    <string name="add_playlist_dialog_title">Are you sure?</string>
+    <string name="add_playlist_dialog_desc">All unsaved data will be deleted</string>
+    <string name="add_playlist_dialog_positive_button">Finish</string>
+    <string name="add_playlist_dialog_neutral_button">Cancel</string>
+    <plurals name="tracks_count">
+        <item quantity="zero">%d треков</item>
+        <item quantity="one">%d трек</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="many">%d треков</item>
+        <item quantity="other">%d трека</item>
+    </plurals>
+    <string name="bottom_sheet_title">Add to playlist</string>
+    <string name="audioArgs">audioArgs</string>
 </resources>

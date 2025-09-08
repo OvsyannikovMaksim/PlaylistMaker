@@ -17,19 +17,38 @@
         tools:layout="@layout/fragment_media"
         android:label="MediaFragment" >
         <action
+            android:id="@+id/action_PlaylistFragment_to_addPlaylistFragment"
+            app:destination="@id/addPlaylistFragment" />
+        <action
             android:id="@+id/action_mediaFragment_to_audioPlayerActivity"
-            app:destination="@id/audioPlayerActivity" />
+            app:destination="@id/audioPlayerFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.playlistmaker.search.ui.SearchFragment"
         android:label="SearchFragment"
-        tools:layout="@layout/fragment_search"/>
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_audioPlayerActivity"
+            app:destination="@id/audioPlayerFragment" />
+    </fragment>
 
-    <activity
-        android:id="@+id/audioPlayerActivity"
-        android:name="com.example.playlistmaker.audioplayer.ui.AudioPlayerActivity"
-        android:label="AudioPlayerActivity"
-        tools:layout="@layout/activity_audioplayer"/>
+    <fragment
+        android:id="@+id/audioPlayerFragment"
+        android:name="com.example.playlistmaker.audioplayer.ui.AudioPlayerFragment"
+        android:label="AudioPlayerFragment"
+        tools:layout="@layout/fragment_audioplayer">
+        <action
+            android:id="@+id/action_audioPlayerActivity_to_addPlaylistFragment"
+            app:destination="@id/addPlaylistFragment" />
+        <argument android:name="audioArgs" app:argType="com.example.playlistmaker.search.domain.model.Track"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/addPlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.fragments.AddPlaylistFragment"
+        android:label="PlaylistFragment"
+        tools:layout="@layout/fragment_add_playlist"/>
 
 </navigation>

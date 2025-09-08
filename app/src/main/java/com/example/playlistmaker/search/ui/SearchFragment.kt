@@ -4,16 +4,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
-import com.example.playlistmaker.audioplayer.ui.AudioPlayerActivity
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.model.SearchScreenState
 import com.example.playlistmaker.search.domain.model.Track
@@ -91,12 +93,12 @@ class SearchFragment : Fragment() {
             afterTextChanged = { _: Editable? -> },
         )
 
-        binding.trackRv.adapter = TrackListAdapter(songs, clickListener)
-        binding.historyRv.adapter = TrackListAdapter(historyList, clickListener)
+        binding.trackRv.adapter = TrackListAdapter(songs, getClickListener())
+        binding.historyRv.adapter = TrackListAdapter(historyList, getClickListener())
         searchText?.let { binding.editText.setText(it) }
         binding.editText.setOnFocusChangeListener { _, hasFocus ->
             val history = viewModel.getHistory()
-            if(hasFocus && history.isNotEmpty()) {
+            if (hasFocus && history.isNotEmpty()) {
                 viewModel.setState(SearchScreenState.History(history))
             } else {
                 viewModel.setState(SearchScreenState.Nothing)
@@ -107,6 +109,7 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        isClickAllowed = true
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -189,15 +192,21 @@ class SearchFragment : Fragment() {
         binding.placeholder.isVisible = false
     }
 
-    private val clickListener =
-        TrackListAdapter.TrackClickListener { track ->
+    private fun getClickListener(): TrackListAdapter.TrackClickListener {
+        return TrackListAdapter.TrackClickListener { track ->
+            Log.d("TEST", "listener")
             if (clickDebounce()) {
                 viewModel.addHistory(track)
-                AudioPlayerActivity.launch(requireActivity(), track)
+                findNavController().navigate(
+                    R.id.action_searchFragment_to_audioPlayerActivity,
+                    bundleOf("audioArgs" to track)
+                )
             }
         }
+    }
 
     private fun clickDebounce(): Boolean {
+        Log.d("TEST", "debounce $isClickAllowed")
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false

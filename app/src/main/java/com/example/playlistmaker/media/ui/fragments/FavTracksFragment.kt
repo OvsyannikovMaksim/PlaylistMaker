@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.playlistmaker.audioplayer.ui.AudioPlayerActivity
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavTracksBinding
 import com.example.playlistmaker.media.ui.view_model.FavTracksViewModel
 import com.example.playlistmaker.search.ui.adapter.TrackListAdapter
@@ -58,7 +60,10 @@ class FavTracksFragment : Fragment() {
     private val clickListener =
         TrackListAdapter.TrackClickListener { track ->
             if (clickDebounce()) {
-                AudioPlayerActivity.launch(requireActivity(), track)
+                findNavController().navigate(
+                    R.id.action_mediaFragment_to_audioPlayerActivity,
+                    bundleOf("audioArgs" to track)
+                )
             }
         }
 

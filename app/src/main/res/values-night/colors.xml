@@ -8,4 +8,5 @@
     <color name="inverted_background">@color/white</color>
     <color name="audioplayer_button">@color/white</color>
     <color name="bottom_bar">@color/yp_black</color>
+    <color name="bottom_sheet">@color/white</color>
 </resources>

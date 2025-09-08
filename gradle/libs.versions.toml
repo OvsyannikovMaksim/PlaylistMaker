@@ -16,6 +16,7 @@ navigationFragment = "2.8.9"
 navigationUI="2.8.9"
 coroutines = "1.6.2"
 room_version = "2.6.1"
+nav_version = "2.9.3"
 
 [libraries]
 adapter-rxjava2 = { module = "com.squareup.retrofit2:adapter-rxjava2", version.ref = "retrofit" }
@@ -38,6 +39,7 @@ coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-androi
 room-runtime = {group = "androidx.room", name = "room-runtime", version.ref = "room_version"}
 room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room_version"}
 room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room_version"}
+safe-args = {group="androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "nav_version"}
 
 
 [plugins]

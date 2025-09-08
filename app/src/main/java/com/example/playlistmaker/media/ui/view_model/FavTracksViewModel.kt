@@ -8,7 +8,7 @@ import com.example.playlistmaker.media.domain.FavTracksInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.launch
 
-class FavTracksViewModel(val favTracksInteractor: FavTracksInteractor) : ViewModel() {
+class FavTracksViewModel(private val favTracksInteractor: FavTracksInteractor) : ViewModel() {
 
     private val favTracks: MutableLiveData<List<Track>> = MutableLiveData()
     fun favTracks(): LiveData<List<Track>> = favTracks
