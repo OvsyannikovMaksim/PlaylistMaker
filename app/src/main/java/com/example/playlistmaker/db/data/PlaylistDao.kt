@@ -13,9 +13,6 @@ interface PlaylistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlaylist(track: PlaylistEntity)
 
-    @Delete
-    suspend fun deletePlaylist(track: PlaylistEntity)
-
     @Query("DELETE FROM tracks_in_playlist WHERE artistName=:artistName AND trackName=:trackName")
     suspend fun deleteTrack(artistName: String, trackName: String)
 
@@ -48,4 +45,10 @@ interface PlaylistDao {
 
     @Query("SELECT * FROM playlist_table WHERE id=:playlistId")
     suspend fun getPlaylistInfo(playlistId: Int): PlaylistEntity
+
+    @Query("DELETE FROM playlist_table WHERE id=:playlistId")
+    suspend fun deletePlaylist(playlistId: Int)
+
+    @Query("DELETE FROM playlist_to_track WHERE playlistId=:playlistId")
+    suspend fun deletePlaylistFromPlaylistToTrack(playlistId: Int)
 }

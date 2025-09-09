@@ -1,9 +1,11 @@
 package com.example.playlistmaker.media.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -47,13 +49,18 @@ class PlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getState(args.playlist.id)
-        viewModel.getState().observe(viewLifecycleOwner){
+        viewModel.getState().observe(viewLifecycleOwner) {
             setUpUi(it.playlist)
             setUpTrackBottomSheet(it.tracks)
+            setUpOptionBottomSheet(it.playlist)
         }
     }
+
     private fun setUpUi(playlist: Playlist) {
         binding.apply {
+            toolbar.setNavigationOnClickListener {
+                findNavController().popBackStack()
+            }
             playlistTitle.text = playlist.name
             if (playlist.desc.isEmpty()) {
                 playlistDesc.isVisible = false
@@ -77,15 +84,24 @@ class PlaylistFragment : Fragment() {
             .centerCrop()
             .transform(RoundedCorners(Utils.dpToPx(8.0F, requireContext())))
             .into(binding.playlistImage)
+
         binding.shareButton.setOnClickListener {
-            viewModel.share()
+            viewModel.share(shareClickListener)
+        }
+        binding.optionsButton.setOnClickListener {
+            BottomSheetBehavior.from(binding.bottomSheetOption).apply {
+                isFitToContents = false
+                halfExpandedRatio = 0.5f
+                skipCollapsed = true
+                state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            }
         }
     }
 
-    private fun setUpTrackBottomSheet(trackList: List<Track>){
+    private fun setUpTrackBottomSheet(trackList: List<Track>) {
         BottomSheetBehavior.from(binding.bottomSheet).apply {
             isFitToContents = false
-            halfExpandedRatio = 0.35f
+            halfExpandedRatio = 0.32f
             skipCollapsed = true
             state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
@@ -93,7 +109,38 @@ class PlaylistFragment : Fragment() {
         binding.tracksRv.adapter = TrackListAdapter(trackList, clickListener)
     }
 
-    fun showDeleteTrackAlert(track: Track) {
+    private fun setUpOptionBottomSheet(playlist: Playlist) {
+        BottomSheetBehavior.from(binding.bottomSheetOption).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        binding.apply {
+            playlistNameBsh.text = playlist.name
+            playlistTrackAmountBsh.text = requireContext().resources.getQuantityString(
+                R.plurals.tracks_count,
+                playlist.tracksAmount,
+                playlist.tracksAmount
+            )
+            shareButtonBsh.setOnClickListener {
+                viewModel.share(shareClickListener)
+            }
+            deleteButtonBsh.setOnClickListener{
+                showDeletePlaylistAlert()
+            }
+        }
+        val imageUri = if (playlist.imagePath == null) {
+            null
+        } else {
+            File(playlist.imagePath).toUri()
+        }
+        Glide.with(this)
+            .load(imageUri)
+            .placeholder(R.drawable.placeholder)
+            .centerCrop()
+            .transform(RoundedCorners(Utils.dpToPx(2.0F, requireContext())))
+            .into(binding.playlistImageBsh)
+    }
+
+    private fun showDeleteTrackAlert(track: Track) {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage(R.string.dialog_delete_track_message)
             .setNegativeButton(R.string.dialog_no) { dialog, which -> }
@@ -103,8 +150,19 @@ class PlaylistFragment : Fragment() {
             .show()
     }
 
+    private fun showDeletePlaylistAlert() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage(R.string.dialog_delete_track_message)
+            .setNegativeButton(R.string.dialog_no) { dialog, which -> }
+            .setPositiveButton(R.string.dialog_yes) { dialog, which ->
+                viewModel.deletePlaylist()
+                findNavController().popBackStack()
+            }
+            .show()
+    }
+
     private val clickListener =
-        object: TrackListAdapter.TrackClickListener {
+        object : TrackListAdapter.TrackClickListener {
             override fun onTrackClick(track: Track) {
                 if (clickDebounce()) {
                     findNavController().navigate(
@@ -119,6 +177,26 @@ class PlaylistFragment : Fragment() {
                 return true
             }
         }
+
+    private val shareClickListener = object : PlaylistViewModel.ShareClick {
+        override fun onEmptyList() {
+            Toast.makeText(context, R.string.empty_track_list_toast_text, Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onList(string: String) {
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "plain/text"
+                putExtra(Intent.EXTRA_TEXT, string)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(
+                Intent.createChooser(
+                    intent,
+                    requireContext().getString(R.string.chooser_text)
+                )
+            )
+        }
+    }
 
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed

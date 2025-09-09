@@ -150,4 +150,89 @@
             tool:listitem="@layout/track_item_list"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/bottom_sheet_option"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/botton_sheet_background"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:behavior_fitToContents="true"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="120dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/bottom_sheet_rectangle" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/playlist_image_bsh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/placeholder"/>
+            <TextView
+                android:id="@+id/playlist_name_bsh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/playlist_image_bsh"
+                app:layout_constraintBottom_toTopOf="@id/playlist_track_amount_bsh"
+                app:layout_constraintTop_toTopOf="@id/playlist_image_bsh"
+                style="@style/AddPlaylistHint"
+                android:textColor="@color/text_color"/>
+            <TextView
+                android:id="@+id/playlist_track_amount_bsh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/playlist_image_bsh"
+                app:layout_constraintTop_toBottomOf="@id/playlist_name_bsh"
+                app:layout_constraintBottom_toBottomOf="@id/playlist_image_bsh"
+                android:fontFamily="@font/ys_display_regular"
+                android:textFontWeight="400"
+                android:textSize="11sp"
+                android:textColor="@color/text_color"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/share_button_bsh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_text"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="21dp"
+            style="@style/AddPlaylistHint"
+            android:textColor="@color/text_color"/>
+
+        <TextView
+            android:id="@+id/edit_button_bsh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_text"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="21dp"
+            style="@style/AddPlaylistHint"
+            android:textColor="@color/text_color"/>
+
+        <TextView
+            android:id="@+id/delete_button_bsh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_text"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="21dp"
+            style="@style/AddPlaylistHint"
+            android:textColor="@color/text_color"/>
+    </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

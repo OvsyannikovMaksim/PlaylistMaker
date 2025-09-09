@@ -16,10 +16,6 @@ class PlaylistRepositoryImpl(private val database: AppDatabase) : PlaylistReposi
         database.playlistDao().insertPlaylist(map(playlist))
     }
 
-    override suspend fun removePlayList(playlist: Playlist) {
-        database.playlistDao().deletePlaylist(map(playlist))
-    }
-
     override suspend fun getPlaylists(): Flow<List<Playlist>> = flow {
         emit(database.playlistDao().getPlaylists().map { map(it) })
     }
@@ -79,5 +75,13 @@ class PlaylistRepositoryImpl(private val database: AppDatabase) : PlaylistReposi
 
     override suspend fun getPlaylistInfo(playlistId: Int) = flow {
         emit(map(database.playlistDao().getPlaylistInfo(playlistId)))
+    }
+
+    override suspend fun deletePlaylist(playlistId: Int) {
+        database.playlistDao().deletePlaylist(playlistId)
+    }
+
+    override suspend fun deletePlaylistFromPlaylistToTrack(playlistId: Int) {
+        database.playlistDao().deletePlaylistFromPlaylistToTrack(playlistId)
     }
 }

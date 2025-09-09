@@ -1,12 +1,10 @@
 package com.example.playlistmaker.media.ui.view_model
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.media.domain.PlaylistInteractor
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.domain.model.PlaylistScreenState
@@ -19,7 +17,6 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : Vi
     fun getState(): LiveData<PlaylistScreenState> = state
 
     fun getState(playlistId: Int) {
-        Log.d("TEST", "getState")
         viewModelScope.launch {
             var playlist: Playlist? = null
             var tracks: List<Track> = emptyList()
@@ -45,9 +42,33 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : Vi
         getState(playlist.id)
     }
 
-    fun share() {
-        if(state.value?.tracks.isNullOrEmpty()){
-            Toast.makeText(viewModelModule, "", Toast.LENGTH_SHORT)
+    fun deletePlaylist() {
+        viewModelScope.launch {
+            playlistInteractor.deletePlaylist(state.value?.playlist?.id ?: 0)
         }
+    }
+
+    fun share(shareClick: ShareClick) {
+        if (state.value?.tracks.isNullOrEmpty()) {
+            shareClick.onEmptyList()
+        } else {
+            shareClick.onList(createShareContent())
+        }
+    }
+
+    private fun createShareContent(): String {
+        val stringBuilder = StringBuilder()
+            .appendLine(state.value?.playlist?.name)
+            .appendLine(state.value?.playlist?.desc)
+            .appendLine("${state.value?.playlist?.tracksAmount} треков")
+        state.value?.tracks?.forEachIndexed { index, track ->
+            stringBuilder.appendLine("${index + 1}. ${track.artistName} - ${track.trackName} (${track.trackTime})")
+        }
+        return stringBuilder.toString()
+    }
+
+    interface ShareClick {
+        fun onEmptyList()
+        fun onList(string: String)
     }
 }

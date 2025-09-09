@@ -35,12 +35,6 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
         }
     }
 
-    override suspend fun removePlayList(playlist: Playlist) {
-        withContext(Dispatchers.IO) {
-            playlistRepository.removePlayList(playlist)
-        }
-    }
-
     override suspend fun getPlaylists(): Flow<List<Playlist>> {
         return playlistRepository.getPlaylists()
     }
@@ -58,5 +52,10 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
 
     override suspend fun getPlaylistInfo(playlistId: Int): Flow<Playlist> {
         return playlistRepository.getPlaylistInfo(playlistId)
+    }
+
+    override suspend fun deletePlaylist(playlistId: Int) {
+        playlistRepository.deletePlaylist(playlistId)
+        playlistRepository.deletePlaylistFromPlaylistToTrack(playlistId)
     }
 }
