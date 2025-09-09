@@ -51,4 +51,7 @@ interface PlaylistDao {
 
     @Query("DELETE FROM playlist_to_track WHERE playlistId=:playlistId")
     suspend fun deletePlaylistFromPlaylistToTrack(playlistId: Int)
+
+    @Query("SELECT trackTime FROM tracks_in_playlist JOIN (SELECT * FROM playlist_to_track WHERE playlistId=:playlistId) as t1 ON tracks_in_playlist.id=t1.trackId")
+    suspend fun getTimeOfTrackInPlaylist(playlistId: Int): List<String>
 }

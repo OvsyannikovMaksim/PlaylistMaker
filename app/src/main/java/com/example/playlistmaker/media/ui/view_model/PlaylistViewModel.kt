@@ -21,7 +21,8 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : Vi
             var tracks: List<Track> = emptyList()
             playlistInteractor.getPlaylistInfo(playlistId).collect { playlist = it }
             playlistInteractor.getTracksInPlaylist(playlistId).collect { tracks = it }
-            state.postValue(PlaylistScreenState(playlist!!, tracks))
+            val minutes = playlistInteractor.getTimeOfTrackInPlaylist(playlistId)
+            state.postValue(PlaylistScreenState(playlist!!, tracks, minutes))
         }
     }
 

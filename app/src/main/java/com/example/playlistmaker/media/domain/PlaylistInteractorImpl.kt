@@ -5,9 +5,9 @@ import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.domain.repository.PlaylistRepository
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository) :
     PlaylistInteractor {
@@ -57,5 +57,17 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
     override suspend fun deletePlaylist(playlistId: Int) {
         playlistRepository.deletePlaylist(playlistId)
         playlistRepository.deletePlaylistFromPlaylistToTrack(playlistId)
+    }
+
+    override suspend fun getTimeOfTrackInPlaylist(playlistId: Int): Int {
+        val tracksTime = playlistRepository.getTimeOfTrackInPlaylist(playlistId)
+        var sumTimeInMills = 0L
+        tracksTime.forEach {
+            val time = it.split(':')
+            val minToMills = TimeUnit.MINUTES.toMillis(time[0].toLong())
+            val secToMills = TimeUnit.SECONDS.toMillis(time[1].toLong())
+            sumTimeInMills+=(minToMills+secToMills)
+        }
+        return TimeUnit.MILLISECONDS.toMinutes(sumTimeInMills).toInt()
     }
 }

@@ -51,13 +51,13 @@ class PlaylistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getState(args.playlist.id)
         viewModel.getState().observe(viewLifecycleOwner) {
-            setUpUi(it.playlist)
+            setUpUi(it.playlist, it.sumTimeImMin)
             setUpTrackBottomSheet(it.tracks)
             setUpOptionBottomSheet(it.playlist)
         }
     }
 
-    private fun setUpUi(playlist: Playlist) {
+    private fun setUpUi(playlist: Playlist, minutes: Int) {
         binding.apply {
             toolbar.setNavigationOnClickListener {
                 findNavController().popBackStack()
@@ -72,6 +72,11 @@ class PlaylistFragment : Fragment() {
                 R.plurals.tracks_count,
                 playlist.tracksAmount,
                 playlist.tracksAmount
+            )
+            playlistTime.text = requireContext().resources.getQuantityString(
+                R.plurals.track_sum_time,
+                minutes,
+                minutes
             )
         }
         val imageUri = if (playlist.imagePath == null) {
@@ -116,6 +121,25 @@ class PlaylistFragment : Fragment() {
     private fun setUpOptionBottomSheet(playlist: Playlist) {
         BottomSheetBehavior.from(binding.bottomSheetOption).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
+            addBottomSheetCallback(object :
+                BottomSheetBehavior.BottomSheetCallback() {
+
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    when (newState) {
+                        BottomSheetBehavior.STATE_HIDDEN -> {
+                            binding.overlay.visibility = View.GONE
+                        }
+
+                        else -> {
+                            binding.overlay.visibility = View.VISIBLE
+                        }
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    binding.overlay.alpha = slideOffset.coerceIn(0f, 1f).coerceAtMost(1f)
+                }
+            })
         }
         binding.apply {
             playlistNameBsh.text = playlist.name

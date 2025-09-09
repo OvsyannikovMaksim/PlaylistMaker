@@ -84,4 +84,8 @@ class PlaylistRepositoryImpl(private val database: AppDatabase) : PlaylistReposi
     override suspend fun deletePlaylistFromPlaylistToTrack(playlistId: Int) {
         database.playlistDao().deletePlaylistFromPlaylistToTrack(playlistId)
     }
+
+    override suspend fun getTimeOfTrackInPlaylist(playlistId: Int): List<String> {
+        return database.playlistDao().getTimeOfTrackInPlaylist(playlistId)
+    }
 }
