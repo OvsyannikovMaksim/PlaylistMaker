@@ -3,7 +3,7 @@ package com.example.playlistmaker.db.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "tracks_in_fav")
+@Entity(tableName = "tracks_in_playlist")
 data class TracksInPlaylistsEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,

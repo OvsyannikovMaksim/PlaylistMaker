@@ -12,15 +12,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMyPlaylistsBinding
 import com.example.playlistmaker.media.ui.adapter.PlaylistAdapter
-import com.example.playlistmaker.media.ui.view_model.PlaylistViewModel
-import com.example.playlistmaker.search.ui.adapter.TrackListAdapter
+import com.example.playlistmaker.media.ui.view_model.MyPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyPlaylistsFragment : Fragment() {
 
     private var _binding: FragmentMyPlaylistsBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModel<PlaylistViewModel>()
+    private val viewModel by viewModel<MyPlaylistViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,

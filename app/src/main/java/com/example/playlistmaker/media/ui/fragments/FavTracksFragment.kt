@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavTracksBinding
 import com.example.playlistmaker.media.ui.view_model.FavTracksViewModel
+import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.adapter.TrackListAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -55,15 +56,18 @@ class FavTracksFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        isClickAllowed = true
     }
 
     private val clickListener =
-        TrackListAdapter.TrackClickListener { track ->
-            if (clickDebounce()) {
-                findNavController().navigate(
-                    R.id.action_mediaFragment_to_audioPlayerActivity,
-                    bundleOf("audioArgs" to track)
-                )
+        object: TrackListAdapter.TrackClickListener {
+            override fun onTrackClick(track: Track) {
+                if (clickDebounce()) {
+                    findNavController().navigate(
+                        R.id.action_mediaFragment_to_audioPlayerActivity,
+                        bundleOf("audioArgs" to track)
+                    )
+                }
             }
         }
 

@@ -24,14 +24,13 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.addPlaylistFragment, R.id.audioPlayerFragment -> {
-                    binding.bottomNavigationView.isVisible = false
-                    binding.divider.isVisible = false
-                }
-
-                else -> {
+                R.id.mediaFragment, R.id.settingsFragment, R.id.searchFragment -> {
                     binding.bottomNavigationView.isVisible = true
                     binding.divider.isVisible = true
+                }
+                else -> {
+                    binding.bottomNavigationView.isVisible = false
+                    binding.divider.isVisible = false
                 }
             }
         }

@@ -175,6 +175,7 @@ class AudioPlayerFragment : Fragment() {
         }
     }
 
+
     private fun prepareMediaPlayer() {
         viewModel.prepareMediaPlayer(trackInfo?.previewUrl)
     }

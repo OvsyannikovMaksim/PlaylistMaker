@@ -45,4 +45,7 @@
     </plurals>
     <string name="bottom_sheet_title">Add to playlist</string>
     <string name="audioArgs">audioArgs</string>
+    <string name="dialog_delete_track_message">Do you wand delete this track?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
 </resources>
