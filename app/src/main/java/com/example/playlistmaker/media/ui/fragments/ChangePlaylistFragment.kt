@@ -50,8 +50,10 @@ class ChangePlaylistFragment : Fragment() {
         val pickImage = registerForActivityResult(
             ActivityResultContracts.PickVisualMedia()
         ) { uri ->
-            setPicture(uri)
-            this.uri = uri
+            if (uri != null) {
+                setPicture(uri)
+                this.uri = uri
+            }
         }
 
         viewModel.getPlaylist(args.playlistId)
