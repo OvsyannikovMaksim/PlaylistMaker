@@ -2,6 +2,7 @@ package com.example.playlistmaker.media.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,6 +96,9 @@ class PlaylistFragment : Fragment() {
                 skipCollapsed = true
                 state = BottomSheetBehavior.STATE_HALF_EXPANDED
             }
+        }
+        binding.editButtonBsh.setOnClickListener{
+            findNavController().navigate(R.id.action_playlistFragment_to_changePlaylistFragment, bundleOf("playlistId" to args.playlist.id))
         }
     }
 
