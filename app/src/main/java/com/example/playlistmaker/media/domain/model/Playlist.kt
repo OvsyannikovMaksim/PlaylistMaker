@@ -1,6 +1,11 @@
 package com.example.playlistmaker.media.domain.model
 
-import android.net.Uri
-import com.example.playlistmaker.search.domain.model.Track
+import java.io.Serializable
 
-data class Playlist(val name: String, val desc: String, val imagePath: String?, val tracks: List<Track>, val tracksAmount: Int)
+data class Playlist(
+    val id: Int,
+    val name: String,
+    val desc: String,
+    val imagePath: String?,
+    val tracksAmount: Int
+) : Serializable

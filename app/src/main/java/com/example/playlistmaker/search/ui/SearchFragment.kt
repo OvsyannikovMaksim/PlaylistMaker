@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.audioplayer.ui.AudioPlayerFragment.Companion.NAV_TAG
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.model.SearchScreenState
 import com.example.playlistmaker.search.domain.model.Track
@@ -93,8 +94,8 @@ class SearchFragment : Fragment() {
             afterTextChanged = { _: Editable? -> },
         )
 
-        binding.trackRv.adapter = TrackListAdapter(songs, getClickListener())
-        binding.historyRv.adapter = TrackListAdapter(historyList, getClickListener())
+        binding.trackRv.adapter = TrackListAdapter(songs, clickListener)
+        binding.historyRv.adapter = TrackListAdapter(historyList, clickListener)
         searchText?.let { binding.editText.setText(it) }
         binding.editText.setOnFocusChangeListener { _, hasFocus ->
             val history = viewModel.getHistory()
@@ -192,18 +193,17 @@ class SearchFragment : Fragment() {
         binding.placeholder.isVisible = false
     }
 
-    private fun getClickListener(): TrackListAdapter.TrackClickListener {
-        return TrackListAdapter.TrackClickListener { track ->
-            Log.d("TEST", "listener")
-            if (clickDebounce()) {
-                viewModel.addHistory(track)
-                findNavController().navigate(
-                    R.id.action_searchFragment_to_audioPlayerActivity,
-                    bundleOf("audioArgs" to track)
-                )
+    private val clickListener =
+        object: TrackListAdapter.TrackClickListener {
+            override fun onTrackClick(track: Track) {
+                if (clickDebounce()) {
+                    findNavController().navigate(
+                        R.id.action_searchFragment_to_audioPlayerActivity,
+                        bundleOf(NAV_TAG to track)
+                    )
+                }
             }
         }
-    }
 
     private fun clickDebounce(): Boolean {
         Log.d("TEST", "debounce $isClickAllowed")

@@ -66,21 +66,30 @@ class AudioPlayerFragment : Fragment() {
         viewModel.playlists().observe(viewLifecycleOwner) {
             binding.playlistsRv.isVisible = !it.isNullOrEmpty()
             binding.playlistsRv.adapter = PlaylistBottomSheetAdapter(it) { playlist ->
-                if (viewModel.addTrackToPlaylist(playlist, trackInfo!!)) {
+                viewModel.addTrackToPlaylist(playlist, trackInfo!!)
+            }
+        }
+
+        viewModel.isAddedToPlaylist().observe(viewLifecycleOwner) {
+            when (it.needShow) {
+                true -> {
                     Toast.makeText(
                         requireContext(),
-                        "Added to playlist '${playlist.name}'",
+                        "Added to playlist '${it.playlistName}'",
                         Toast.LENGTH_LONG
                     ).show()
                     hideBottomSheet()
-                    viewModel.getPlaylists()
-                } else {
+                }
+
+                false -> {
                     Toast.makeText(
                         requireContext(),
-                        "Already in playlist '${playlist.name}'",
+                        "Already in playlist '${it.playlistName}'",
                         Toast.LENGTH_LONG
                     ).show()
                 }
+
+                else -> {}
             }
         }
 
@@ -99,6 +108,7 @@ class AudioPlayerFragment : Fragment() {
             findNavController().navigate(R.id.action_audioPlayerActivity_to_addPlaylistFragment)
         }
         binding.playlistButton.setOnClickListener {
+            viewModel.getPlaylists()
             BottomSheetBehavior.from(binding.bottomSheet).apply {
                 isFitToContents = false
                 halfExpandedRatio = 0.6f
@@ -165,6 +175,7 @@ class AudioPlayerFragment : Fragment() {
         }
     }
 
+
     private fun prepareMediaPlayer() {
         viewModel.prepareMediaPlayer(trackInfo?.previewUrl)
     }
@@ -175,5 +186,9 @@ class AudioPlayerFragment : Fragment() {
 
     private fun hideBottomSheet() {
         BottomSheetBehavior.from(binding.bottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    companion object {
+        const val NAV_TAG = "audioArgs"
     }
 }

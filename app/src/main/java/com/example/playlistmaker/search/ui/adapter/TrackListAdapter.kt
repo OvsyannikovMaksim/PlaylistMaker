@@ -22,6 +22,7 @@ class TrackListAdapter(
     ) {
         holder.bind(trackList[position])
         holder.itemView.setOnClickListener { clickListener.onTrackClick(trackList[position]) }
+        holder.itemView.setOnLongClickListener { clickListener.onLongTrackClick(trackList[position]) }
     }
 
     override fun onCreateViewHolder(
@@ -56,7 +57,8 @@ class TrackListAdapter(
         }
     }
 
-    fun interface TrackClickListener {
+    interface TrackClickListener {
         fun onTrackClick(track: Track)
+        fun onLongTrackClick(track: Track) = false
     }
 }

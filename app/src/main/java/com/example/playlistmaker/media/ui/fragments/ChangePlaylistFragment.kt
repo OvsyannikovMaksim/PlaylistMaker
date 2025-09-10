@@ -8,30 +8,31 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAddPlaylistBinding
 import com.example.playlistmaker.media.domain.model.Playlist
-import com.example.playlistmaker.media.ui.view_model.AddPlaylistViewModel
+import com.example.playlistmaker.media.ui.view_model.ChangePlaylistViewModel
 import com.example.playlistmaker.utils.Utils
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 
-open class AddPlaylistFragment : Fragment() {
+class ChangePlaylistFragment : Fragment() {
 
     private var _binding: FragmentAddPlaylistBinding? = null
     private val binding get() = _binding!!
-    protected open val viewModel by viewModel<AddPlaylistViewModel>()
+    protected open val viewModel by viewModel<ChangePlaylistViewModel>()
+    private val args: ChangePlaylistFragmentArgs by navArgs()
     private var uri: Uri? = null
 
     override fun onCreateView(
@@ -49,8 +50,16 @@ open class AddPlaylistFragment : Fragment() {
         val pickImage = registerForActivityResult(
             ActivityResultContracts.PickVisualMedia()
         ) { uri ->
-            setPicture(uri)
-            this.uri = uri
+            if (uri != null) {
+                setPicture(uri)
+                this.uri = uri
+            }
+        }
+
+        viewModel.getPlaylist(args.playlistId)
+
+        viewModel.getPlaylist().observe(viewLifecycleOwner) {
+            setUpUi(it)
         }
 
         binding.inputPlaylistName.addTextChangedListener(
@@ -60,20 +69,7 @@ open class AddPlaylistFragment : Fragment() {
         )
 
         binding.toolbar.setNavigationOnClickListener {
-            if (binding.inputPlaylistName.text.isNullOrEmpty()
-                && binding.inputPlaylistDesc.text.isNullOrEmpty()
-                && uri == null
-            ) {
-                findNavController().popBackStack()
-            } else {
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(R.string.add_playlist_dialog_title)
-                    .setMessage(R.string.add_playlist_dialog_desc)
-                    .setPositiveButton(R.string.add_playlist_dialog_positive_button) { _, _ ->
-                        findNavController().popBackStack()
-                    }.setNeutralButton(R.string.add_playlist_dialog_neutral_button) { _, _ ->
-                    }.show()
-            }
+            findNavController().popBackStack()
         }
 
         binding.addPicture.setOnClickListener {
@@ -84,11 +80,24 @@ open class AddPlaylistFragment : Fragment() {
             val name = binding.inputPlaylistName.text.toString()
             val desc = binding.inputPlaylistDesc.text.toString()
             val imagePath = saveImageToPrivateStorage(uri)
-            viewModel.savePlayList(Playlist(0, name, desc, imagePath, 0))
-            Toast.makeText(requireContext(), "Playlist '${name}' was created", Toast.LENGTH_LONG)
-                .show()
+            viewModel.savePlayList(name, desc, imagePath)
             findNavController().popBackStack()
         }
+    }
+
+    private fun setUpUi(playlist: Playlist) {
+        binding.apply {
+            inputPlaylistName.setText(playlist.name)
+            inputPlaylistDesc.setText(playlist.desc)
+            addPlaylistButton.setText(R.string.update_playlist)
+            toolbar.title = ""
+        }
+        val imageUri = if (playlist.imagePath == null) {
+            null
+        } else {
+            File(playlist.imagePath).toUri()
+        }
+        setPicture(imageUri)
     }
 
     private fun setPicture(uri: Uri?) {
