@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.audioplayer.ui.AudioPlayerFragment.Companion.NAV_TAG
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.model.SearchScreenState
 import com.example.playlistmaker.search.domain.model.Track
@@ -198,7 +199,7 @@ class SearchFragment : Fragment() {
                 if (clickDebounce()) {
                     findNavController().navigate(
                         R.id.action_searchFragment_to_audioPlayerActivity,
-                        bundleOf("audioArgs" to track)
+                        bundleOf(NAV_TAG to track)
                     )
                 }
             }

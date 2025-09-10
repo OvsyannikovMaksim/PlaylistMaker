@@ -17,6 +17,7 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.audioplayer.ui.AudioPlayerFragment.Companion.NAV_TAG
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.ui.view_model.PlaylistViewModel
@@ -44,7 +45,7 @@ class PlaylistFragment : Fragment() {
                 if (clickDebounce()) {
                     findNavController().navigate(
                         R.id.action_playlistFragment_to_audioPlayerFragment,
-                        bundleOf("audioArgs" to track)
+                        bundleOf(NAV_TAG to track)
                     )
                 }
             }

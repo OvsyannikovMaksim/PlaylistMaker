@@ -187,4 +187,8 @@ class AudioPlayerFragment : Fragment() {
     private fun hideBottomSheet() {
         BottomSheetBehavior.from(binding.bottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
     }
+
+    companion object {
+        const val NAV_TAG = "audioArgs"
+    }
 }
