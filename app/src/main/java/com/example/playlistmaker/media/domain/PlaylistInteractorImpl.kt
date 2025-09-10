@@ -1,6 +1,5 @@
 package com.example.playlistmaker.media.domain
 
-import android.util.Log
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.domain.repository.PlaylistRepository
 import com.example.playlistmaker.search.domain.model.Track
@@ -14,7 +13,6 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
 
     override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track): Boolean {
         return withContext(Dispatchers.IO) {
-            Log.d("TEST", "addTrackToPlaylist: $playlist, $track")
             var trackId = playlistRepository.getTrackId(track) ?: 0
             val res = playlistRepository.isTrackInPlaylist(playlist.id, trackId)
             if (!res) {
@@ -35,11 +33,11 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
         }
     }
 
-    override suspend fun getPlaylists(): Flow<List<Playlist>> {
+    override fun getPlaylists(): Flow<List<Playlist>> {
         return playlistRepository.getPlaylists()
     }
 
-    override suspend fun getTracksInPlaylist(playlistId: Int): Flow<List<Track>> {
+    override fun getTracksInPlaylist(playlistId: Int): Flow<List<Track>> {
         return playlistRepository.getTracksForPlaylist(playlistId)
     }
 
@@ -50,7 +48,7 @@ class PlaylistInteractorImpl(private val playlistRepository: PlaylistRepository)
         }
     }
 
-    override suspend fun getPlaylistInfo(playlistId: Int): Flow<Playlist> {
+    override fun getPlaylistInfo(playlistId: Int): Flow<Playlist> {
         return playlistRepository.getPlaylistInfo(playlistId)
     }
 

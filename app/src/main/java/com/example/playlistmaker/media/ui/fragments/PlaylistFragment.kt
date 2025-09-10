@@ -38,6 +38,43 @@ class PlaylistFragment : Fragment() {
     private val viewModel by viewModel<PlaylistViewModel>()
     private var isClickAllowed = true
 
+    private val clickListener =
+        object : TrackListAdapter.TrackClickListener {
+            override fun onTrackClick(track: Track) {
+                if (clickDebounce()) {
+                    findNavController().navigate(
+                        R.id.action_playlistFragment_to_audioPlayerFragment,
+                        bundleOf("audioArgs" to track)
+                    )
+                }
+            }
+
+            override fun onLongTrackClick(track: Track): Boolean {
+                showDeleteTrackAlert(track)
+                return true
+            }
+        }
+
+    private val shareClickListener = object : PlaylistViewModel.ShareClick {
+        override fun onEmptyList() {
+            Toast.makeText(context, R.string.empty_track_list_toast_text, Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onList(string: String) {
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "plain/text"
+                putExtra(Intent.EXTRA_TEXT, string)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(
+                Intent.createChooser(
+                    intent,
+                    requireContext().getString(R.string.chooser_text)
+                )
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -188,43 +225,6 @@ class PlaylistFragment : Fragment() {
                 findNavController().popBackStack()
             }
             .show()
-    }
-
-    private val clickListener =
-        object : TrackListAdapter.TrackClickListener {
-            override fun onTrackClick(track: Track) {
-                if (clickDebounce()) {
-                    findNavController().navigate(
-                        R.id.action_playlistFragment_to_audioPlayerFragment,
-                        bundleOf("audioArgs" to track)
-                    )
-                }
-            }
-
-            override fun onLongTrackClick(track: Track): Boolean {
-                showDeleteTrackAlert(track)
-                return true
-            }
-        }
-
-    private val shareClickListener = object : PlaylistViewModel.ShareClick {
-        override fun onEmptyList() {
-            Toast.makeText(context, R.string.empty_track_list_toast_text, Toast.LENGTH_SHORT).show()
-        }
-
-        override fun onList(string: String) {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "plain/text"
-                putExtra(Intent.EXTRA_TEXT, string)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            startActivity(
-                Intent.createChooser(
-                    intent,
-                    requireContext().getString(R.string.chooser_text)
-                )
-            )
-        }
     }
 
     private fun clickDebounce(): Boolean {
