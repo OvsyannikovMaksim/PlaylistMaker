@@ -51,6 +51,7 @@ class PlaylistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getState(args.playlist.id)
         viewModel.getState().observe(viewLifecycleOwner) {
+            Log.d("TEST", it.playlist.toString())
             setUpUi(it.playlist, it.sumTimeImMin)
             setUpTrackBottomSheet(it.tracks)
             setUpOptionBottomSheet(it.playlist)
@@ -171,8 +172,8 @@ class PlaylistFragment : Fragment() {
     private fun showDeleteTrackAlert(track: Track) {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage(R.string.dialog_delete_track_message)
-            .setNegativeButton(R.string.dialog_no) { dialog, which -> }
-            .setPositiveButton(R.string.dialog_yes) { dialog, which ->
+            .setNegativeButton(R.string.dialog_no) { _, _ -> }
+            .setPositiveButton(R.string.dialog_yes) { _, _ ->
                 viewModel.deleteTrackFromPlaylist(args.playlist, track)
             }
             .show()
@@ -181,8 +182,8 @@ class PlaylistFragment : Fragment() {
     private fun showDeletePlaylistAlert() {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage(R.string.dialog_delete_track_message)
-            .setNegativeButton(R.string.dialog_no) { dialog, which -> }
-            .setPositiveButton(R.string.dialog_yes) { dialog, which ->
+            .setNegativeButton(R.string.dialog_no) { _, _ -> }
+            .setPositiveButton(R.string.dialog_yes) { _, _ ->
                 viewModel.deletePlaylist()
                 findNavController().popBackStack()
             }

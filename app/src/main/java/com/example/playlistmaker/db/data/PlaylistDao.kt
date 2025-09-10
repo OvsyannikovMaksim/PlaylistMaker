@@ -1,11 +1,9 @@
 package com.example.playlistmaker.db.data
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.playlistmaker.search.domain.model.Track
 
 @Dao
 interface PlaylistDao {
@@ -37,7 +35,7 @@ interface PlaylistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addTrackToPlaylist(playlistToTrackEntity: PlaylistToTrackEntity)
 
-    @Query("SELECT * from tracks_in_playlist JOIN (SELECT * FROM playlist_to_track WHERE playlistId=:playlistId) as t1 ON tracks_in_playlist.id=t1.trackId")
+    @Query("SELECT tracks_in_playlist.* from tracks_in_playlist JOIN (SELECT * FROM playlist_to_track WHERE playlistId=:playlistId) as t1 ON tracks_in_playlist.id=t1.trackId")
     suspend fun getTrackListForPlaylist(playlistId: Int): List<TrackEntity>
 
     @Query("SELECT COUNT(*) from playlist_to_track WHERE trackId=:trackId")

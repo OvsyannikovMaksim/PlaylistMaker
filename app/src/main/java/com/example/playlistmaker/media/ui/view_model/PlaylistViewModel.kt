@@ -20,7 +20,7 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : Vi
             var playlist: Playlist? = null
             var tracks: List<Track> = emptyList()
             playlistInteractor.getPlaylistInfo(playlistId).collect { playlist = it }
-            playlistInteractor.getTracksInPlaylist(playlistId).collect { tracks = it }
+            playlistInteractor.getTracksInPlaylist(playlistId).collect { tracks = it.reversed() }
             val minutes = playlistInteractor.getTimeOfTrackInPlaylist(playlistId)
             state.postValue(PlaylistScreenState(playlist!!, tracks, minutes))
         }
@@ -38,8 +38,8 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : Vi
                     playlist.tracksAmount - 1
                 )
             )
+            getState(playlist.id)
         }
-        getState(playlist.id)
     }
 
     fun deletePlaylist() {
